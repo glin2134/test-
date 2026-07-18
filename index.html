@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎯 Угадай число</title>
+    <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        }
+
+        .container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        padding: 30px 25px;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+        text-align: center;
+        font-size: 28px;
+        color: #2c3e50;
+        margin-bottom: 5px;
+        }
+
+        .subtitle {
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-bottom: 20px;
+        }
+
+        .stats {
+        display: flex;
+        justify-content: space-between;
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        }
+
+        .stat-item {
+        text-align: center;
+        font-size: 13px;
+        color: #7f8c8d;
+        }
+
+        .stat-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        }
+
+        .stat-value.green { color: #27ae60; }
+        .stat-value.gold { color: #f39c12; }
+        .stat-value.blue { color: #3498db; }
+
+        .input-area {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        }
+
+        input {
+        flex: 1;
+        padding: 15px;
+        font-size: 24px;
+        text-align: center;
+        border: 3px solid #e0e0e0;
+        border-radius: 15px;
+        outline: none;
+        transition: border-color 0.3s;
+        background: #fafafa;
+        }
+
+        input:focus {
+        border-color: #667eea;
+        }
+
+        input:disabled {
+        opacity: 0.5;
+        }
+
+        .btn {
+        padding: 15px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: bold;
+        touch-action: manipulation;
+        }
+
+        .btn:active {
+        transform: scale(0.95);
+        }
+
+        .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        flex: 1;
+        }
+
+        .btn-success {
+        background: #27ae60;
+        color: white;
+        flex: 0 0 auto;
+        }
+
+        .btn-danger {
+        background: #e74c3c;
+        color: white;
+        flex: 0 0 auto;
+        }
+
+        .btn-hint {
+        background: #f39c12;
+        color: white;
+        flex: 0 0 auto;
+        }
+
+        .btn-new {
+        background: #3498db;
+        color: white;
+        width: 100%;
+        margin-top: 10px;
+        }
+
+        .result {
+        text-align: center;
+        font-size: 18px;
+        padding: 15px;
+        border-radius: 15px;
+        margin-top: 15px;
+        min-height: 60px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .result.orange { color: #e67e22; }
+        .result.green { color: #27ae60; }
+        .result.red { color: #e74c3c; }
+        .result.blue { color: #3498db; }
+        .result.purple { color: #8e44ad; }
+
+        .hint-box {
+        text-align: center;
+        font-size: 15px;
+        padding: 10px;
+        margin-top: 10px;
+        min-height: 40px;
+        color: #8e44ad;
+        background: #f3e5f5;
+        border-radius: 10px;
+        }
+
+        .btn-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        }
+
+        .btn-row .btn {
+        flex: 1;
+        font-size: 16px;
+        padding: 12px;
+        }
+
+        @media (max-width: 400px) {
+        .container { padding: 20px 15px; }
+        h1 { font-size: 24px; }
+        input { font-size: 20px; padding: 12px; }
+        .btn { font-size: 16px; padding: 12px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎯 Угадай число</h1>
+    <div class="subtitle">От 1 до 100</div>
+
+    <div class="stats">
+        <div class="stat-item">
+            🏆 Очки<br>
+            <span class="stat-value green" id="scoreDisplay">0</span>
+        </div>
+        <div class="stat-item">
+            👑 Рекорд<br>
+            <span class="stat-value gold" id="bestDisplay">0</span>
+        </div>
+        <div class="stat-item">
+            📊 Попытки<br>
+            <span class="stat-value blue" id="attemptsDisplay">0/10</span>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <input type="number" id="guessInput" placeholder="Число" min="1" max="100" inputmode="numeric">
+        <button class="btn btn-success" id="checkBtn">✅</button>
+    </div>
+
+    <div class="result blue" id="resultDisplay">Введи число и нажми ✅</div>
+
+    <div class="hint-box" id="hintDisplay">💡 Нажми "Подсказка"</div>
+
+    <div class="btn-row">
+        <button class="btn btn-hint" id="hintBtn">💡</button>
+        <button class="btn btn-danger" id="newBtn">🔄 Новая</button>
+    </div>
+</div>
+
+<script>
+    // ===== ИГРА =====
+    let secret = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+    const maxAttempts = 10;
+    let score = 0;
+    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+
+    // DOM элементы
+    const input = document.getElementById('guessInput');
+    const checkBtn = document.getElementById('checkBtn');
+    const newBtn = document.getElementById('newBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const hintDisplay = document.getElementById('hintDisplay');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const bestDisplay = document.getElementById('bestDisplay');
+    const attemptsDisplay = document.getElementById('attemptsDisplay');
+
+    // Обновление UI
+    function updateUI() {
+    scoreDisplay.textContent = score;
+    bestDisplay.textContent = bestScore;
+    attemptsDisplay.textContent = `${attempts}/${maxAttempts}`;
+    }
+
+    // Проверка
+    function checkGuess() {
+    const raw = input.value.trim();
+    if (raw === '') {
+    resultDisplay.textContent = '⚠️ Введи число!';
+    resultDisplay.className = 'result red';
+    return;
+    }
+
+    const guess = parseInt(raw);
+    if (isNaN(guess) || guess < 1 || guess > 100) {
+    resultDisplay.textContent = '⚠️ Число от 1 до 100!';
+    resultDisplay.className = 'result red';
+    return;
+    }
+
+    attempts++;
+    const remaining = maxAttempts - attempts;
+
+    if (guess < secret) {
+    resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
+    resultDisplay.className = 'result orange';
+    } else if (guess > secret) {
+    resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
+    resultDisplay.className = 'result orange';
+    } else {
+    // Победа!
+    const points = maxAttempts - attempts + 1;
+    score += points;
+    if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('bestScore', bestScore);
+    }
+    resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${points} очков`;
+    resultDisplay.className = 'result green';
+    input.disabled = true;
+    checkBtn.disabled = true;
+    updateUI();
+    return;
+    }
+
+    // Проверка на проигрыш
+    if (attempts >= maxAttempts) {
+    resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
+    resultDisplay.className = 'result red';
+    input.disabled = true;
+    checkBtn.disabled = true;
+    }
+
+    updateUI();
+    input.value = '';
+    input.focus();
+    }
+
+    // Новая игра
+    function newGame() {
+    secret = Math.floor(Math.random() * 100) + 1;
+    attempts = 0;
+    input.disabled = false;
+    checkBtn.disabled = false;
+    input.value = '';
+    resultDisplay.textContent = '🔄 Новая игра! Введи число';
+    resultDisplay.className = 'result blue';
+    hintDisplay.textContent = '💡 Нажми "Подсказка"';
+    updateUI();
+    input.focus();
+    }
+
+    // Подсказка
+    function showHint() {
+    if (secret < 50) {
+    hintDisplay.textContent = '💡 Число МЕНЬШЕ 50';
+    } else {
+    hintDisplay.textContent = '💡 Число БОЛЬШЕ 50';
+    }
+    }
+
+    // События
+    checkBtn.addEventListener('click', checkGuess);
+    newBtn.addEventListener('click', newGame);
+    hintBtn.addEventListener('click', showHint);
+
+    input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkGuess();
+    });
+
+    // Старт
+    updateUI();
+    input.focus();
+</script>
+
+</body>
+</html>
+
