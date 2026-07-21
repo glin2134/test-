@@ -29,24 +29,32 @@
 
         body.dark .container {
         background: rgba(30, 30, 50, 0.95);
-        color: white;
+        color: #fff;
         }
 
-        body.dark .stats {
-        background: rgba(255,255,255,0.1);
+        body.dark .stats,
+        body.dark .result,
+        body.dark .hint-box {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ddd;
         }
 
         body.dark .stat-value {
-        color: white;
+        color: #fff;
         }
 
-        body.dark .result {
-        background: rgba(255,255,255,0.1);
+        body.dark input {
+        background: #2a2a3a;
+        border-color: #444;
+        color: #fff;
         }
 
-        body.dark .hint-box {
-        background: rgba(255,255,255,0.1);
-        color: #bb86fc;
+        body.dark .subtitle {
+        color: #aaa;
+        }
+
+        body.dark h1 {
+        color: #fff;
         }
 
         .container {
@@ -55,7 +63,7 @@
         padding: 30px 25px;
         max-width: 400px;
         width: 100%;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         transition: background 0.5s;
         }
 
@@ -66,19 +74,11 @@
         margin-bottom: 5px;
         }
 
-        body.dark h1 {
-        color: white;
-        }
-
         .subtitle {
         text-align: center;
         color: #7f8c8d;
         font-size: 14px;
         margin-bottom: 20px;
-        }
-
-        body.dark .subtitle {
-        color: #aaa;
         }
 
         .stats {
@@ -97,20 +97,24 @@
         color: #7f8c8d;
         }
 
-        body.dark .stat-item {
-        color: #aaa;
-        }
-
         .stat-value {
         font-size: 20px;
         font-weight: bold;
         color: #2c3e50;
         }
 
-        .stat-value.green { color: #27ae60; }
-        .stat-value.gold { color: #f39c12; }
-        .stat-value.blue { color: #3498db; }
-        .stat-value.purple { color: #8e44ad; }
+        .stat-value.green {
+        color: #27ae60;
+        }
+        .stat-value.gold {
+        color: #f39c12;
+        }
+        .stat-value.blue {
+        color: #3498db;
+        }
+        .stat-value.purple {
+        color: #8e44ad;
+        }
 
         .input-area {
         display: flex;
@@ -128,12 +132,6 @@
         outline: none;
         transition: border-color 0.3s, background 0.3s;
         background: #fafafa;
-        }
-
-        body.dark input {
-        background: #2a2a3a;
-        border-color: #444;
-        color: white;
         }
 
         input:focus {
@@ -164,32 +162,27 @@
         color: white;
         flex: 0 0 auto;
         }
-
         .btn-danger {
         background: #e74c3c;
         color: white;
         flex: 0 0 auto;
         }
-
         .btn-hint {
         background: #f39c12;
         color: white;
         flex: 0 0 auto;
         }
-
         .btn-theme {
         background: #34495e;
         color: white;
         flex: 0 0 auto;
         }
-
         .btn-new {
         background: #3498db;
         color: white;
         width: 100%;
         margin-top: 10px;
         }
-
         .btn-difficulty {
         background: #8e44ad;
         color: white;
@@ -197,7 +190,6 @@
         font-size: 14px;
         padding: 10px;
         }
-
         .btn-difficulty.active {
         background: #6c3483;
         box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
@@ -217,11 +209,21 @@
         transition: background 0.5s;
         }
 
-        .result.orange { color: #e67e22; }
-        .result.green { color: #27ae60; }
-        .result.red { color: #e74c3c; }
-        .result.blue { color: #3498db; }
-        .result.purple { color: #8e44ad; }
+        .result.orange {
+        color: #e67e22;
+        }
+        .result.green {
+        color: #27ae60;
+        }
+        .result.red {
+        color: #e74c3c;
+        }
+        .result.blue {
+        color: #3498db;
+        }
+        .result.purple {
+        color: #8e44ad;
+        }
 
         .hint-box {
         text-align: center;
@@ -260,15 +262,21 @@
         border-radius: 15px;
         font-size: 18px;
         font-weight: bold;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         animation: slideDown 0.5s ease-out;
         z-index: 1000;
         display: none;
         }
 
         @keyframes slideDown {
-        from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        from {
+        transform: translateX(-50%) translateY(-100px);
+        opacity: 0;
+        }
+        to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+        }
         }
 
         .achievement.show {
@@ -276,17 +284,29 @@
         }
 
         @media (max-width: 400px) {
-        .container { padding: 20px 15px; }
-        h1 { font-size: 24px; }
-        input { font-size: 20px; padding: 12px; }
-        .btn { font-size: 14px; padding: 10px 14px; }
-        .btn-difficulty { font-size: 12px; padding: 8px; }
+        .container {
+        padding: 20px 15px;
+        }
+        h1 {
+        font-size: 24px;
+        }
+        input {
+        font-size: 20px;
+        padding: 12px;
+        }
+        .btn {
+        font-size: 14px;
+        padding: 10px 14px;
+        }
+        .btn-difficulty {
+        font-size: 12px;
+        padding: 8px;
+        }
         }
     </style>
 </head>
 <body>
 
-<!-- Всплывающее уведомление о достижении -->
 <div class="achievement" id="achievement">🏆 Достижение!</div>
 
 <div class="container">
@@ -294,22 +314,10 @@
     <div class="subtitle" id="subtitle">От 1 до 100</div>
 
     <div class="stats">
-        <div class="stat-item">
-            🏆 Очки<br>
-            <span class="stat-value green" id="scoreDisplay">0</span>
-        </div>
-        <div class="stat-item">
-            👑 Рекорд<br>
-            <span class="stat-value gold" id="bestDisplay">0</span>
-        </div>
-        <div class="stat-item">
-            📊 Попытки<br>
-            <span class="stat-value blue" id="attemptsDisplay">0/10</span>
-        </div>
-        <div class="stat-item">
-            ⏱️ Сек<br>
-            <span class="stat-value purple" id="timerDisplay">0</span>
-        </div>
+        <div class="stat-item">🏆 Очки<br><span class="stat-value green" id="scoreDisplay">0</span></div>
+        <div class="stat-item">👑 Рекорд<br><span class="stat-value gold" id="bestDisplay">0</span></div>
+        <div class="stat-item">📊 Попытки<br><span class="stat-value blue" id="attemptsDisplay">0/10</span></div>
+        <div class="stat-item">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
     </div>
 
     <div class="input-area">
@@ -318,7 +326,6 @@
     </div>
 
     <div class="result blue" id="resultDisplay">Введи число и нажми ✅</div>
-
     <div class="hint-box" id="hintDisplay">💡 Нажми "Подсказка"</div>
 
     <div class="btn-row">
@@ -334,8 +341,27 @@
     </div>
 </div>
 
+<!-- VK BRIDGE -->
+<script src="https://vk.com/js/api/xd_connection.js?2"></script>
+<script src="https://vk.com/js/api/openapi.js?169"></script>
+
 <script>
-    // ===== ИГРА =====
+    // ============================================================
+    // 1. VK MINI APP INIT
+    // ============================================================
+    VK.init(function() {
+    VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
+    if (typeof VKWebAppInit !== 'undefined') {
+    VKWebAppInit();
+    }
+    console.log("✅ VK Mini App инициализировано");
+    }, function(error) {
+    console.error("❌ Ошибка VK:", error);
+    });
+
+    // ============================================================
+    // 2. ИГРА — ВСЯ ЛОГИКА
+    // ============================================================
     let secret = Math.floor(Math.random() * 100) + 1;
     let attempts = 0;
     const maxAttempts = 10;
@@ -344,14 +370,20 @@
     let timer = 0;
     let timerInterval = null;
     let isGameActive = false;
-    let level = 'easy'; // easy, medium, hard
+    let level = 'easy';
     let achievements = {
     firstTry: false,
     master: false,
     pro: false
     };
 
-    // DOM элементы
+    const levels = {
+    easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
+    medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
+    hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
+    };
+
+    // DOM
     const input = document.getElementById('guessInput');
     const checkBtn = document.getElementById('checkBtn');
     const newBtn = document.getElementById('newBtn');
@@ -363,18 +395,8 @@
     const bestDisplay = document.getElementById('bestDisplay');
     const attemptsDisplay = document.getElementById('attemptsDisplay');
     const timerDisplay = document.getElementById('timerDisplay');
-    const subtitle = document.getElementById('subtitle');
     const achievementDiv = document.getElementById('achievement');
     const diffBtns = document.querySelectorAll('.btn-difficulty');
-
-    // Уровни сложности
-    const levels = {
-    easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
-    medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
-    hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
-    };
-
-    // ===== ФУНКЦИИ =====
 
     function updateUI() {
     scoreDisplay.textContent = score;
@@ -407,18 +429,15 @@
     isGameActive = false;
     }
 
-    function checkAchievements(guess) {
-    // С первого раза
+    function checkAchievements() {
     if (attempts === 1 && !achievements.firstTry) {
     achievements.firstTry = true;
     showAchievement('🎯 С первого раза! Ты гений!');
     }
-    // Мастер (3 попытки)
     if (attempts <= 3 && !achievements.master) {
     achievements.master = true;
     showAchievement('🏆 Мастер! Отличная интуиция!');
     }
-    // Профи (всегда)
     if (attempts <= 5 && !achievements.pro) {
     achievements.pro = true;
     showAchievement('🌟 Профи! Ты на высоте!');
@@ -432,10 +451,8 @@
     resultDisplay.className = 'result red';
     return;
     }
-
     const guess = parseInt(raw);
     const maxNum = levels[level].max;
-
     if (isNaN(guess) || guess < 1 || guess > maxNum) {
     resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
     resultDisplay.className = 'result red';
@@ -443,7 +460,6 @@
     }
 
     if (!isGameActive) startTimer();
-
     attempts++;
     const remaining = levels[level].attempts - attempts;
 
@@ -454,7 +470,6 @@
     resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
     resultDisplay.className = 'result orange';
     } else {
-    // Победа!
     stopTimer();
     const bonus = levels[level].bonus;
     const points = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
@@ -464,18 +479,15 @@
     bestScore = score;
     localStorage.setItem('bestScore', bestScore);
     }
-
     resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${totalPoints} очков 🕐${timer}с`;
     resultDisplay.className = 'result green';
     input.disabled = true;
     checkBtn.disabled = true;
-
-    checkAchievements(guess);
+    checkAchievements();
     updateUI();
     return;
     }
 
-    // Проверка на проигрыш
     if (attempts >= levels[level].attempts) {
     stopTimer();
     resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
@@ -491,24 +503,19 @@
 
     function newGame() {
     stopTimer();
-
     const maxNum = levels[level].max;
     secret = Math.floor(Math.random() * maxNum) + 1;
     attempts = 0;
     timer = 0;
     timerDisplay.textContent = '0';
     isGameActive = false;
-
     input.disabled = false;
     checkBtn.disabled = false;
     input.value = '';
     resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
     resultDisplay.className = 'result blue';
     hintDisplay.textContent = '💡 Нажми "Подсказка"';
-
-    // Сбрасываем достижения
     achievements = { firstTry: false, master: false, pro: false };
-
     updateUI();
     input.focus();
     }
@@ -533,8 +540,7 @@
     diffBtns.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.level === lvl);
     });
-    subtitle.textContent = levels[lvl].label;
-    document.querySelector('.subtitle').textContent = levels[lvl].label;
+    document.getElementById('subtitle').textContent = levels[lvl].label;
     const maxNum = levels[lvl].max;
     secret = Math.floor(Math.random() * maxNum) + 1;
     attempts = 0;
@@ -551,27 +557,23 @@
     input.focus();
     }
 
-    // ===== СОБЫТИЯ =====
-
+    // События
     checkBtn.addEventListener('click', checkGuess);
     newBtn.addEventListener('click', newGame);
     hintBtn.addEventListener('click', showHint);
     themeBtn.addEventListener('click', toggleTheme);
-
     input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') checkGuess();
     });
-
     diffBtns.forEach(btn => {
     btn.addEventListener('click', () => {
     setLevel(btn.dataset.level);
     });
     });
 
-    // ===== СТАРТ =====
+    // Старт
     updateUI();
     input.focus();
 </script>
-
 </body>
 </html>
