@@ -1,344 +1,474 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎯 Угадай число</title>
-    <style>
-        * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎯 Угадай число</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+-webkit-tap-highlight-color: transparent;
+}
 
-        body {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        transition: background 0.5s;
-        }
+body {
+font-family: 'Segoe UI', Arial, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+transition: background 0.5s;
+}
 
-        body.dark {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
+body.dark {
+background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
 
-        body.dark .container {
-        background: rgba(30, 30, 50, 0.95);
-        color: #fff;
-        }
+body.dark .container {
+background: rgba(30, 30, 50, 0.95);
+color: #fff;
+}
 
-        body.dark .stats,
-        body.dark .result,
-        body.dark .hint-box {
-        background: rgba(255, 255, 255, 0.08);
-        color: #ddd;
-        }
+body.dark .stats,
+body.dark .result,
+body.dark .hint-box,
+body.dark .leaderboard {
+background: rgba(255, 255, 255, 0.08);
+color: #ddd;
+}
 
-        body.dark .stat-value {
-        color: #fff;
-        }
+body.dark .stat-value {
+color: #fff;
+}
 
-        body.dark input {
-        background: #2a2a3a;
-        border-color: #444;
-        color: #fff;
-        }
+body.dark input {
+background: #2a2a3a;
+border-color: #444;
+color: #fff;
+}
 
-        body.dark .subtitle {
-        color: #aaa;
-        }
+body.dark .subtitle {
+color: #aaa;
+}
 
-        body.dark h1 {
-        color: #fff;
-        }
+body.dark h1 {
+color: #fff;
+}
 
-        .container {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 30px;
-        padding: 30px 25px;
-        max-width: 400px;
-        width: 100%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        transition: background 0.5s;
-        }
+.container {
+background: rgba(255, 255, 255, 0.95);
+border-radius: 30px;
+padding: 30px 25px;
+max-width: 420px;
+width: 100%;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+transition: background 0.5s;
+}
 
-        h1 {
-        text-align: center;
-        font-size: 28px;
-        color: #2c3e50;
-        margin-bottom: 5px;
-        }
+h1 {
+text-align: center;
+font-size: 28px;
+color: #2c3e50;
+margin-bottom: 5px;
+}
 
-        .subtitle {
-        text-align: center;
-        color: #7f8c8d;
-        font-size: 14px;
-        margin-bottom: 20px;
-        }
+.subtitle {
+text-align: center;
+color: #7f8c8d;
+font-size: 14px;
+margin-bottom: 20px;
+}
 
-        .stats {
-        display: flex;
-        justify-content: space-between;
-        background: #f8f9fa;
-        padding: 12px 15px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        transition: background 0.5s;
-        }
+.stats {
+display: flex;
+justify-content: space-between;
+background: #f8f9fa;
+padding: 12px 15px;
+border-radius: 15px;
+margin-bottom: 20px;
+transition: background 0.5s;
+}
 
-        .stat-item {
-        text-align: center;
-        font-size: 13px;
-        color: #7f8c8d;
-        }
+.stat-item {
+text-align: center;
+font-size: 13px;
+color: #7f8c8d;
+}
 
-        .stat-value {
-        font-size: 20px;
-        font-weight: bold;
-        color: #2c3e50;
-        }
+.stat-value {
+font-size: 20px;
+font-weight: bold;
+color: #2c3e50;
+}
 
-        .stat-value.green {
-        color: #27ae60;
-        }
-        .stat-value.gold {
-        color: #f39c12;
-        }
-        .stat-value.blue {
-        color: #3498db;
-        }
-        .stat-value.purple {
-        color: #8e44ad;
-        }
+.stat-value.green {
+color: #27ae60;
+}
+.stat-value.gold {
+color: #f39c12;
+}
+.stat-value.blue {
+color: #3498db;
+}
+.stat-value.purple {
+color: #8e44ad;
+}
 
-        .input-area {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-        }
+.input-area {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+}
 
-        input {
-        flex: 1;
-        padding: 15px;
-        font-size: 24px;
-        text-align: center;
-        border: 3px solid #e0e0e0;
-        border-radius: 15px;
-        outline: none;
-        transition: border-color 0.3s, background 0.3s;
-        background: #fafafa;
-        }
+input {
+flex: 1;
+padding: 15px;
+font-size: 24px;
+text-align: center;
+border: 3px solid #e0e0e0;
+border-radius: 15px;
+outline: none;
+transition: border-color 0.3s, background 0.3s;
+background: #fafafa;
+}
 
-        input:focus {
-        border-color: #667eea;
-        }
+input:focus {
+border-color: #667eea;
+}
 
-        input:disabled {
-        opacity: 0.5;
-        }
+input:disabled {
+opacity: 0.5;
+}
 
-        .btn {
-        padding: 15px 25px;
-        font-size: 18px;
-        border: none;
-        border-radius: 15px;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-weight: bold;
-        touch-action: manipulation;
-        }
+.btn {
+padding: 15px 25px;
+font-size: 18px;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.2s;
+font-weight: bold;
+touch-action: manipulation;
+}
 
-        .btn:active {
-        transform: scale(0.95);
-        }
+.btn:active {
+transform: scale(0.95);
+}
 
-        .btn-success {
-        background: #27ae60;
-        color: white;
-        flex: 0 0 auto;
-        }
-        .btn-danger {
-        background: #e74c3c;
-        color: white;
-        flex: 0 0 auto;
-        }
-        .btn-hint {
-        background: #f39c12;
-        color: white;
-        flex: 0 0 auto;
-        }
-        .btn-theme {
-        background: #34495e;
-        color: white;
-        flex: 0 0 auto;
-        }
-        .btn-new {
-        background: #3498db;
-        color: white;
-        width: 100%;
-        margin-top: 10px;
-        }
-        .btn-difficulty {
-        background: #8e44ad;
-        color: white;
-        flex: 1;
-        font-size: 14px;
-        padding: 10px;
-        }
-        .btn-difficulty.active {
-        background: #6c3483;
-        box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
-        }
+.btn-success {
+background: #27ae60;
+color: white;
+flex: 0 0 auto;
+}
+.btn-danger {
+background: #e74c3c;
+color: white;
+flex: 0 0 auto;
+}
+.btn-hint {
+background: #f39c12;
+color: white;
+flex: 0 0 auto;
+}
+.btn-theme {
+background: #34495e;
+color: white;
+flex: 0 0 auto;
+}
+.btn-new {
+background: #3498db;
+color: white;
+width: 100%;
+margin-top: 10px;
+}
+.btn-difficulty {
+background: #8e44ad;
+color: white;
+flex: 1;
+font-size: 14px;
+padding: 10px;
+}
+.btn-difficulty.active {
+background: #6c3483;
+box-shadow: 0 0 10px rgba(142, 68, 173, 0.5);
+}
+.btn-leaderboard {
+background: #e67e22;
+color: white;
+flex: 1;
+font-size: 14px;
+padding: 10px;
+}
 
-        .result {
-        text-align: center;
-        font-size: 18px;
-        padding: 15px;
-        border-radius: 15px;
-        margin-top: 15px;
-        min-height: 60px;
-        background: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.5s;
-        }
+.result {
+text-align: center;
+font-size: 18px;
+padding: 15px;
+border-radius: 15px;
+margin-top: 15px;
+min-height: 60px;
+background: #f8f9fa;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: background 0.5s;
+}
 
-        .result.orange {
-        color: #e67e22;
-        }
-        .result.green {
-        color: #27ae60;
-        }
-        .result.red {
-        color: #e74c3c;
-        }
-        .result.blue {
-        color: #3498db;
-        }
-        .result.purple {
-        color: #8e44ad;
-        }
+.result.orange {
+color: #e67e22;
+}
+.result.green {
+color: #27ae60;
+}
+.result.red {
+color: #e74c3c;
+}
+.result.blue {
+color: #3498db;
+}
+.result.purple {
+color: #8e44ad;
+}
 
-        .hint-box {
-        text-align: center;
-        font-size: 15px;
-        padding: 10px;
-        margin-top: 10px;
-        min-height: 40px;
-        color: #8e44ad;
-        background: #f3e5f5;
-        border-radius: 10px;
-        transition: background 0.5s;
-        }
+.hint-box {
+text-align: center;
+font-size: 15px;
+padding: 10px;
+margin-top: 10px;
+min-height: 40px;
+color: #8e44ad;
+background: #f3e5f5;
+border-radius: 10px;
+transition: background 0.5s;
+}
 
-        .btn-row {
-        display: flex;
-        gap: 8px;
-        margin-top: 10px;
-        flex-wrap: wrap;
-        }
+.btn-row {
+display: flex;
+gap: 8px;
+margin-top: 10px;
+flex-wrap: wrap;
+}
 
-        .btn-row .btn {
-        flex: 1;
-        font-size: 16px;
-        padding: 12px;
-        min-width: 60px;
-        }
+.btn-row .btn {
+flex: 1;
+font-size: 16px;
+padding: 12px;
+min-width: 60px;
+}
 
-        .achievement {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(39, 174, 96, 0.95);
-        color: white;
-        padding: 15px 30px;
-        border-radius: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        animation: slideDown 0.5s ease-out;
-        z-index: 1000;
-        display: none;
-        }
+.leaderboard {
+background: #f8f9fa;
+border-radius: 15px;
+padding: 15px;
+margin-top: 20px;
+transition: background 0.5s;
+display: none;
+}
 
-        @keyframes slideDown {
-        from {
-        transform: translateX(-50%) translateY(-100px);
-        opacity: 0;
-        }
-        to {
-        transform: translateX(-50%) translateY(0);
-        opacity: 1;
-        }
-        }
+.leaderboard.show {
+display: block;
+}
 
-        .achievement.show {
-        display: block;
-        }
+.leaderboard h3 {
+text-align: center;
+margin-bottom: 10px;
+color: #2c3e50;
+}
 
-        @media (max-width: 400px) {
-        .container {
-        padding: 20px 15px;
-        }
-        h1 {
-        font-size: 24px;
-        }
-        input {
-        font-size: 20px;
-        padding: 12px;
-        }
-        .btn {
-        font-size: 14px;
-        padding: 10px 14px;
-        }
-        .btn-difficulty {
-        font-size: 12px;
-        padding: 8px;
-        }
-        }
-    </style>
+body.dark .leaderboard h3 {
+color: #fff;
+}
+
+.leaderboard-item {
+display: flex;
+justify-content: space-between;
+padding: 8px 12px;
+border-bottom: 1px solid rgba(0,0,0,0.05);
+font-size: 16px;
+}
+
+body.dark .leaderboard-item {
+border-bottom-color: rgba(255,255,255,0.05);
+}
+
+.leaderboard-item:last-child {
+border-bottom: none;
+}
+
+.leaderboard-item .rank {
+font-weight: bold;
+color: #8e44ad;
+min-width: 30px;
+}
+
+.leaderboard-item .name {
+flex: 1;
+margin-left: 10px;
+}
+
+.leaderboard-item .score {
+font-weight: bold;
+color: #27ae60;
+}
+
+.name-input-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.5);
+display: none;
+justify-content: center;
+align-items: center;
+z-index: 999;
+}
+
+.name-input-overlay.show {
+display: flex;
+}
+
+.name-input-box {
+background: white;
+padding: 30px;
+border-radius: 20px;
+max-width: 300px;
+width: 90%;
+text-align: center;
+}
+
+body.dark .name-input-box {
+background: #2a2a3a;
+color: white;
+}
+
+.name-input-box h3 {
+margin-bottom: 15px;
+}
+
+.name-input-box input {
+width: 100%;
+padding: 12px;
+font-size: 18px;
+border: 2px solid #ddd;
+border-radius: 10px;
+margin-bottom: 15px;
+}
+
+.name-input-box .btn {
+width: 100%;
+}
+
+.achievement {
+position: fixed;
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+background: rgba(39, 174, 96, 0.95);
+color: white;
+padding: 15px 30px;
+border-radius: 15px;
+font-size: 18px;
+font-weight: bold;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+animation: slideDown 0.5s ease-out;
+z-index: 1000;
+display: none;
+}
+
+@keyframes slideDown {
+from {
+transform: translateX(-50%) translateY(-100px);
+opacity: 0;
+}
+to {
+transform: translateX(-50%) translateY(0);
+opacity: 1;
+}
+}
+
+.achievement.show {
+display: block;
+}
+
+@media (max-width: 400px) {
+.container {
+padding: 20px 15px;
+}
+h1 {
+font-size: 24px;
+}
+input {
+font-size: 20px;
+padding: 12px;
+}
+.btn {
+font-size: 14px;
+padding: 10px 14px;
+}
+.btn-difficulty {
+font-size: 12px;
+padding: 8px;
+}
+}
+</style>
 </head>
 <body>
 
 <div class="achievement" id="achievement">🏆 Достижение!</div>
 
+<!-- Окно ввода имени -->
+<div class="name-input-overlay" id="nameOverlay">
+<div class="name-input-box">
+<h3>🏆 Новый рекорд!</h3>
+<p style="margin-bottom: 15px; font-size: 14px; opacity: 0.7;">Введи своё имя для таблицы лидеров</p>
+<input type="text" id="nameInput" placeholder="Твоё имя" maxlength="15">
+<button class="btn btn-success" id="saveNameBtn">Сохранить</button>
+</div>
+</div>
+
 <div class="container">
-    <h1>🎯 Угадай число</h1>
-    <div class="subtitle" id="subtitle">От 1 до 100</div>
+<h1>🎯 Угадай число</h1>
+<div class="subtitle" id="subtitle">От 1 до 100</div>
 
-    <div class="stats">
-        <div class="stat-item">🏆 Очки<br><span class="stat-value green" id="scoreDisplay">0</span></div>
-        <div class="stat-item">👑 Рекорд<br><span class="stat-value gold" id="bestDisplay">0</span></div>
-        <div class="stat-item">📊 Попытки<br><span class="stat-value blue" id="attemptsDisplay">0/10</span></div>
-        <div class="stat-item">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
-    </div>
+<div class="stats">
+<div class="stat-item">🏆 Очки<br><span class="stat-value green" id="scoreDisplay">0</span></div>
+<div class="stat-item">👑 Рекорд<br><span class="stat-value gold" id="bestDisplay">0</span></div>
+<div class="stat-item">📊 Попытки<br><span class="stat-value blue" id="attemptsDisplay">0/10</span></div>
+<div class="stat-item">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
+</div>
 
-    <div class="input-area">
-        <input type="number" id="guessInput" placeholder="Число" min="1" max="100" inputmode="numeric">
-        <button class="btn btn-success" id="checkBtn">✅</button>
-    </div>
+<div class="input-area">
+<input type="number" id="guessInput" placeholder="Число" min="1" max="100" inputmode="numeric">
+<button class="btn btn-success" id="checkBtn">✅</button>
+</div>
 
-    <div class="result blue" id="resultDisplay">Введи число и нажми ✅</div>
-    <div class="hint-box" id="hintDisplay">💡 Нажми "Подсказка"</div>
+<div class="result blue" id="resultDisplay">Введи число и нажми ✅</div>
+<div class="hint-box" id="hintDisplay">💡 Нажми "Подсказка"</div>
 
-    <div class="btn-row">
-        <button class="btn btn-hint" id="hintBtn">💡</button>
-        <button class="btn btn-theme" id="themeBtn">🌙</button>
-        <button class="btn btn-danger" id="newBtn">🔄 Новая</button>
-    </div>
+<div class="btn-row">
+<button class="btn btn-hint" id="hintBtn">💡</button>
+<button class="btn btn-theme" id="themeBtn">🌙</button>
+<button class="btn btn-danger" id="newBtn">🔄 Новая</button>
+</div>
 
-    <div class="btn-row" style="margin-top: 10px;">
-        <button class="btn btn-difficulty active" data-level="easy">🟢 Лёгкий</button>
-        <button class="btn btn-difficulty" data-level="medium">🟡 Средний</button>
-        <button class="btn btn-difficulty" data-level="hard">🔴 Сложный</button>
-    </div>
+<div class="btn-row" style="margin-top: 10px;">
+<button class="btn btn-difficulty active" data-level="easy">🟢 Лёгкий</button>
+<button class="btn btn-difficulty" data-level="medium">🟡 Средний</button>
+<button class="btn btn-difficulty" data-level="hard">🔴 Сложный</button>
+</div>
+
+<div class="btn-row" style="margin-top: 5px;">
+<button class="btn btn-leaderboard" id="leaderboardBtn">🏆 Таблица лидеров</button>
+</div>
+
+<div class="leaderboard" id="leaderboard">
+<h3>🏆 Топ-10</h3>
+<div id="leaderboardList"></div>
+</div>
 </div>
 
 <!-- VK BRIDGE -->
@@ -346,234 +476,347 @@
 <script src="https://vk.com/js/api/openapi.js?169"></script>
 
 <script>
-    // ============================================================
-    // 1. VK MINI APP INIT
-    // ============================================================
-    VK.init(function() {
-    VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
-    if (typeof VKWebAppInit !== 'undefined') {
-    VKWebAppInit();
-    }
-    console.log("✅ VK Mini App инициализировано");
-    }, function(error) {
-    console.error("❌ Ошибка VK:", error);
-    });
+// ============================================================
+// 1. VK MINI APP INIT
+// ============================================================
+VK.init(function() {
+VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
+if (typeof VKWebAppInit !== 'undefined') {
+VKWebAppInit();
+}
+console.log("✅ VK Mini App инициализировано");
+}, function(error) {
+console.error("❌ Ошибка VK:", error);
+});
 
-    // ============================================================
-    // 2. ИГРА — ВСЯ ЛОГИКА
-    // ============================================================
-    let secret = Math.floor(Math.random() * 100) + 1;
-    let attempts = 0;
-    const maxAttempts = 10;
-    let score = 0;
-    let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-    let timer = 0;
-    let timerInterval = null;
-    let isGameActive = false;
-    let level = 'easy';
-    let achievements = {
-    firstTry: false,
-    master: false,
-    pro: false
-    };
+// ============================================================
+// 2. ТАБЛИЦА ЛИДЕРОВ
+// ============================================================
 
-    const levels = {
-    easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
-    medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
-    hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
-    };
+// Получить таблицу лидеров из localStorage
+function getLeaderboard() {
+const data = localStorage.getItem('leaderboard');
+return data ? JSON.parse(data) : [];
+}
 
-    // DOM
-    const input = document.getElementById('guessInput');
-    const checkBtn = document.getElementById('checkBtn');
-    const newBtn = document.getElementById('newBtn');
-    const hintBtn = document.getElementById('hintBtn');
-    const themeBtn = document.getElementById('themeBtn');
-    const resultDisplay = document.getElementById('resultDisplay');
-    const hintDisplay = document.getElementById('hintDisplay');
-    const scoreDisplay = document.getElementById('scoreDisplay');
-    const bestDisplay = document.getElementById('bestDisplay');
-    const attemptsDisplay = document.getElementById('attemptsDisplay');
-    const timerDisplay = document.getElementById('timerDisplay');
-    const achievementDiv = document.getElementById('achievement');
-    const diffBtns = document.querySelectorAll('.btn-difficulty');
+// Сохранить таблицу лидеров
+function saveLeaderboard(data) {
+localStorage.setItem('leaderboard', JSON.stringify(data));
+}
 
-    function updateUI() {
-    scoreDisplay.textContent = score;
-    bestDisplay.textContent = bestScore;
-    attemptsDisplay.textContent = `${attempts}/${levels[level].attempts}`;
-    }
+// Добавить новый рекорд
+function addScore(name, points, attempts, time) {
+const board = getLeaderboard();
+board.push({
+name: name,
+points: points,
+attempts: attempts,
+time: time,
+date: new Date().toLocaleDateString()
+});
+// Сортировка по очкам (по убыванию)
+board.sort((a, b) => b.points - a.points);
+// Оставляем только топ-10
+if (board.length > 10) board.length = 10;
+saveLeaderboard(board);
+}
 
-    function showAchievement(text) {
-    achievementDiv.textContent = text;
-    achievementDiv.classList.add('show');
-    setTimeout(() => {
-    achievementDiv.classList.remove('show');
-    }, 2500);
-    }
+// Проверить, попал ли игрок в топ-10
+function isTopScore(points) {
+const board = getLeaderboard();
+if (board.length < 10) return true;
+return points > board[board.length - 1].points;
+}
 
-    function startTimer() {
-    if (timerInterval) return;
-    timer = 0;
-    timerDisplay.textContent = '0';
-    isGameActive = true;
-    timerInterval = setInterval(() => {
-    timer++;
-    timerDisplay.textContent = timer;
-    }, 1000);
-    }
+// Отобразить таблицу лидеров
+function renderLeaderboard() {
+const board = getLeaderboard();
+const list = document.getElementById('leaderboardList');
 
-    function stopTimer() {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    isGameActive = false;
-    }
+if (board.length === 0) {
+list.innerHTML = '<p style="text-align:center; opacity:0.6;">Пока нет рекордов. Стань первым! 🏆</p>';
+return;
+}
 
-    function checkAchievements() {
-    if (attempts === 1 && !achievements.firstTry) {
-    achievements.firstTry = true;
-    showAchievement('🎯 С первого раза! Ты гений!');
-    }
-    if (attempts <= 3 && !achievements.master) {
-    achievements.master = true;
-    showAchievement('🏆 Мастер! Отличная интуиция!');
-    }
-    if (attempts <= 5 && !achievements.pro) {
-    achievements.pro = true;
-    showAchievement('🌟 Профи! Ты на высоте!');
-    }
-    }
+list.innerHTML = board.map((item, index) => `
+<div class="leaderboard-item">
+<span class="rank">#${index + 1}</span>
+<span class="name">${item.name}</span>
+<span class="score">${item.points} 🏆</span>
+</div>
+`).join('');
+}
 
-    function checkGuess() {
-    const raw = input.value.trim();
-    if (raw === '') {
-    resultDisplay.textContent = '⚠️ Введи число!';
-    resultDisplay.className = 'result red';
-    return;
-    }
-    const guess = parseInt(raw);
-    const maxNum = levels[level].max;
-    if (isNaN(guess) || guess < 1 || guess > maxNum) {
-    resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
-    resultDisplay.className = 'result red';
-    return;
-    }
+// Показать/скрыть таблицу лидеров
+function toggleLeaderboard() {
+const board = document.getElementById('leaderboard');
+board.classList.toggle('show');
+if (board.classList.contains('show')) {
+renderLeaderboard();
+document.getElementById('leaderboardBtn').textContent = '❌ Скрыть таблицу';
+} else {
+document.getElementById('leaderboardBtn').textContent = '🏆 Таблица лидеров';
+}
+}
 
-    if (!isGameActive) startTimer();
-    attempts++;
-    const remaining = levels[level].attempts - attempts;
+// ============================================================
+// 3. ИГРА — ВСЯ ЛОГИКА
+// ============================================================
+let secret = Math.floor(Math.random() * 100) + 1;
+let attempts = 0;
+const maxAttempts = 10;
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+let timer = 0;
+let timerInterval = null;
+let isGameActive = false;
+let level = 'easy';
+let achievements = {
+firstTry: false,
+master: false,
+pro: false
+};
+let currentPoints = 0;
 
-    if (guess < secret) {
-    resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
-    resultDisplay.className = 'result orange';
-    } else if (guess > secret) {
-    resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
-    resultDisplay.className = 'result orange';
-    } else {
-    stopTimer();
-    const bonus = levels[level].bonus;
-    const points = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
-    const totalPoints = Math.max(points, 1);
-    score += totalPoints;
-    if (score > bestScore) {
-    bestScore = score;
-    localStorage.setItem('bestScore', bestScore);
-    }
-    resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${totalPoints} очков 🕐${timer}с`;
-    resultDisplay.className = 'result green';
-    input.disabled = true;
-    checkBtn.disabled = true;
-    checkAchievements();
-    updateUI();
-    return;
-    }
+const levels = {
+easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
+medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
+hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
+};
 
-    if (attempts >= levels[level].attempts) {
-    stopTimer();
-    resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
-    resultDisplay.className = 'result red';
-    input.disabled = true;
-    checkBtn.disabled = true;
-    }
+// DOM
+const input = document.getElementById('guessInput');
+const checkBtn = document.getElementById('checkBtn');
+const newBtn = document.getElementById('newBtn');
+const hintBtn = document.getElementById('hintBtn');
+const themeBtn = document.getElementById('themeBtn');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const resultDisplay = document.getElementById('resultDisplay');
+const hintDisplay = document.getElementById('hintDisplay');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const bestDisplay = document.getElementById('bestDisplay');
+const attemptsDisplay = document.getElementById('attemptsDisplay');
+const timerDisplay = document.getElementById('timerDisplay');
+const achievementDiv = document.getElementById('achievement');
+const diffBtns = document.querySelectorAll('.btn-difficulty');
+const nameOverlay = document.getElementById('nameOverlay');
+const nameInput = document.getElementById('nameInput');
+const saveNameBtn = document.getElementById('saveNameBtn');
 
-    updateUI();
-    input.value = '';
-    input.focus();
-    }
+function updateUI() {
+scoreDisplay.textContent = score;
+bestDisplay.textContent = bestScore;
+attemptsDisplay.textContent = `${attempts}/${levels[level].attempts}`;
+}
 
-    function newGame() {
-    stopTimer();
-    const maxNum = levels[level].max;
-    secret = Math.floor(Math.random() * maxNum) + 1;
-    attempts = 0;
-    timer = 0;
-    timerDisplay.textContent = '0';
-    isGameActive = false;
-    input.disabled = false;
-    checkBtn.disabled = false;
-    input.value = '';
-    resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
-    resultDisplay.className = 'result blue';
-    hintDisplay.textContent = '💡 Нажми "Подсказка"';
-    achievements = { firstTry: false, master: false, pro: false };
-    updateUI();
-    input.focus();
-    }
+function showAchievement(text) {
+achievementDiv.textContent = text;
+achievementDiv.classList.add('show');
+setTimeout(() => {
+achievementDiv.classList.remove('show');
+}, 2500);
+}
 
-    function showHint() {
-    const maxNum = levels[level].max;
-    const mid = Math.floor(maxNum / 2);
-    if (secret < mid) {
-    hintDisplay.textContent = `💡 Число МЕНЬШЕ ${mid}`;
-    } else {
-    hintDisplay.textContent = `💡 Число БОЛЬШЕ ${mid}`;
-    }
-    }
+function startTimer() {
+if (timerInterval) return;
+timer = 0;
+timerDisplay.textContent = '0';
+isGameActive = true;
+timerInterval = setInterval(() => {
+timer++;
+timerDisplay.textContent = timer;
+}, 1000);
+}
 
-    function toggleTheme() {
-    document.body.classList.toggle('dark');
-    themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-    }
+function stopTimer() {
+clearInterval(timerInterval);
+timerInterval = null;
+isGameActive = false;
+}
 
-    function setLevel(lvl) {
-    level = lvl;
-    diffBtns.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.level === lvl);
-    });
-    document.getElementById('subtitle').textContent = levels[lvl].label;
-    const maxNum = levels[lvl].max;
-    secret = Math.floor(Math.random() * maxNum) + 1;
-    attempts = 0;
-    timer = 0;
-    timerDisplay.textContent = '0';
-    isGameActive = false;
-    input.disabled = false;
-    checkBtn.disabled = false;
-    input.value = '';
-    resultDisplay.textContent = `🎮 Новый уровень! (1-${maxNum})`;
-    resultDisplay.className = 'result blue';
-    hintDisplay.textContent = '💡 Нажми "Подсказка"';
-    updateUI();
-    input.focus();
-    }
+function checkAchievements() {
+if (attempts === 1 && !achievements.firstTry) {
+achievements.firstTry = true;
+showAchievement('🎯 С первого раза! Ты гений!');
+}
+if (attempts <= 3 && !achievements.master) {
+achievements.master = true;
+showAchievement('🏆 Мастер! Отличная интуиция!');
+}
+if (attempts <= 5 && !achievements.pro) {
+achievements.pro = true;
+showAchievement('🌟 Профи! Ты на высоте!');
+}
+}
 
-    // События
-    checkBtn.addEventListener('click', checkGuess);
-    newBtn.addEventListener('click', newGame);
-    hintBtn.addEventListener('click', showHint);
-    themeBtn.addEventListener('click', toggleTheme);
-    input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') checkGuess();
-    });
-    diffBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-    setLevel(btn.dataset.level);
-    });
-    });
+function checkGuess() {
+const raw = input.value.trim();
+if (raw === '') {
+resultDisplay.textContent = '⚠️ Введи число!';
+resultDisplay.className = 'result red';
+return;
+}
+const guess = parseInt(raw);
+const maxNum = levels[level].max;
+if (isNaN(guess) || guess < 1 || guess > maxNum) {
+resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
+resultDisplay.className = 'result red';
+return;
+}
 
-    // Старт
-    updateUI();
-    input.focus();
+if (!isGameActive) startTimer();
+attempts++;
+const remaining = levels[level].attempts - attempts;
+
+if (guess < secret) {
+resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
+resultDisplay.className = 'result orange';
+} else if (guess > secret) {
+resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
+resultDisplay.className = 'result orange';
+} else {
+stopTimer();
+const bonus = levels[level].bonus;
+currentPoints = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
+currentPoints = Math.max(currentPoints, 1);
+score += currentPoints;
+if (score > bestScore) {
+bestScore = score;
+localStorage.setItem('bestScore', bestScore);
+}
+resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${currentPoints} очков 🕐${timer}с`;
+resultDisplay.className = 'result green';
+input.disabled = true;
+checkBtn.disabled = true;
+checkAchievements();
+updateUI();
+
+// Проверяем, попадает ли результат в топ-10
+if (isTopScore(currentPoints)) {
+const playerName = localStorage.getItem('playerName');
+if (playerName) {
+addScore(playerName, currentPoints, attempts, timer);
+} else {
+nameOverlay.classList.add('show');
+nameInput.focus();
+}
+}
+return;
+}
+
+if (attempts >= levels[level].attempts) {
+stopTimer();
+resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
+resultDisplay.className = 'result red';
+input.disabled = true;
+checkBtn.disabled = true;
+}
+
+updateUI();
+input.value = '';
+input.focus();
+}
+
+function newGame() {
+stopTimer();
+const maxNum = levels[level].max;
+secret = Math.floor(Math.random() * maxNum) + 1;
+attempts = 0;
+timer = 0;
+timerDisplay.textContent = '0';
+isGameActive = false;
+input.disabled = false;
+checkBtn.disabled = false;
+input.value = '';
+resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
+resultDisplay.className = 'result blue';
+hintDisplay.textContent = '💡 Нажми "Подсказка"';
+achievements = { firstTry: false, master: false, pro: false };
+updateUI();
+input.focus();
+}
+
+function showHint() {
+const maxNum = levels[level].max;
+const mid = Math.floor(maxNum / 2);
+if (secret < mid) {
+hintDisplay.textContent = `💡 Число МЕНЬШЕ ${mid}`;
+} else {
+hintDisplay.textContent = `💡 Число БОЛЬШЕ ${mid}`;
+}
+}
+
+function toggleTheme() {
+document.body.classList.toggle('dark');
+themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+}
+
+function setLevel(lvl) {
+level = lvl;
+diffBtns.forEach(btn => {
+btn.classList.toggle('active', btn.dataset.level === lvl);
+});
+document.getElementById('subtitle').textContent = levels[lvl].label;
+const maxNum = levels[lvl].max;
+secret = Math.floor(Math.random() * maxNum) + 1;
+attempts = 0;
+timer = 0;
+timerDisplay.textContent = '0';
+isGameActive = false;
+input.disabled = false;
+checkBtn.disabled = false;
+input.value = '';
+resultDisplay.textContent = `🎮 Новый уровень! (1-${maxNum})`;
+resultDisplay.className = 'result blue';
+hintDisplay.textContent = '💡 Нажми "Подсказка"';
+updateUI();
+input.focus();
+}
+
+// Сохранить имя и записать рекорд
+saveNameBtn.addEventListener('click', function() {
+const name = nameInput.value.trim() || 'Игрок';
+localStorage.setItem('playerName', name);
+addScore(name, currentPoints, attempts, timer);
+nameOverlay.classList.remove('show');
+renderLeaderboard();
+// Если таблица открыта, обновляем её
+if (document.getElementById('leaderboard').classList.contains('show')) {
+renderLeaderboard();
+}
+});
+
+nameInput.addEventListener('keydown', function(e) {
+if (e.key === 'Enter') {
+saveNameBtn.click();
+}
+});
+
+// События
+checkBtn.addEventListener('click', checkGuess);
+newBtn.addEventListener('click', newGame);
+hintBtn.addEventListener('click', showHint);
+themeBtn.addEventListener('click', toggleTheme);
+leaderboardBtn.addEventListener('click', toggleLeaderboard);
+input.addEventListener('keydown', (e) => {
+if (e.key === 'Enter') checkGuess();
+});
+diffBtns.forEach(btn => {
+btn.addEventListener('click', () => {
+setLevel(btn.dataset.level);
+});
+});
+
+// Старт
+updateUI();
+input.focus();
+
+// Если есть имя игрока, запоминаем его
+const savedName = localStorage.getItem('playerName');
+if (savedName) {
+nameInput.value = savedName;
+}
 </script>
 </body>
 </html>
+
