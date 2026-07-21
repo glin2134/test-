@@ -14,6 +14,10 @@ display: flex;
 justify-content: center;
 align-items: center;
 padding: 16px;
+transition: background 0.3s;
+}
+body.dark {
+background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 .container {
 background: white;
@@ -22,9 +26,54 @@ padding: 24px 20px;
 max-width: 400px;
 width: 100%;
 box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+transition: background 0.3s;
+}
+body.dark .container {
+background: #1e1e2e;
+color: #eee;
 }
 h1 { text-align: center; font-size: 26px; margin-bottom: 4px; }
 .subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 18px; }
+body.dark .subtitle { color: #aaa; }
+
+/* Переключатель режимов */
+.mode-switch {
+display: flex;
+gap: 8px;
+margin-bottom: 16px;
+background: #f0f0f0;
+border-radius: 14px;
+padding: 4px;
+}
+body.dark .mode-switch {
+background: #2a2a3a;
+}
+.mode-btn {
+flex: 1;
+padding: 10px;
+border: none;
+border-radius: 12px;
+font-size: 15px;
+font-weight: bold;
+cursor: pointer;
+transition: 0.2s;
+background: transparent;
+color: #666;
+}
+body.dark .mode-btn {
+color: #aaa;
+}
+.mode-btn.active {
+background: #667eea;
+color: white;
+box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+body.dark .mode-btn.active {
+background: #667eea;
+color: white;
+}
+.mode-btn:active { transform: scale(0.96); }
+
 .stats {
 display: flex;
 justify-content: space-between;
@@ -35,11 +84,21 @@ margin-bottom: 18px;
 font-size: 13px;
 text-align: center;
 }
-.stat-value { font-size: 20px; font-weight: bold; }
+body.dark .stats {
+background: #2a2a3a;
+}
+.stat-value {
+font-size: 20px;
+font-weight: bold;
+color: #2c3e50;
+}
+body.dark .stat-value { color: #eee; }
 .green { color: #27ae60; }
 .gold { color: #f39c12; }
 .blue { color: #2980b9; }
 .purple { color: #8e44ad; }
+.red { color: #e74c3c; }
+
 .input-area {
 display: flex;
 gap: 10px;
@@ -53,8 +112,16 @@ text-align: center;
 border: 2px solid #ddd;
 border-radius: 14px;
 outline: none;
+background: #fafafa;
+}
+body.dark input {
+background: #2a2a3a;
+border-color: #444;
+color: #eee;
 }
 input:focus { border-color: #667eea; }
+input:disabled { opacity: 0.5; }
+
 .btn {
 padding: 14px 18px;
 font-size: 18px;
@@ -73,6 +140,7 @@ touch-action: manipulation;
 .btn-difficulty { background: #8e44ad; color: white; flex: 1; font-size: 13px; padding: 10px; }
 .btn-difficulty.active { background: #6c3483; box-shadow: 0 0 8px #8e44ad88; }
 .btn-leaderboard { background: #e67e22; color: white; flex: 1; font-size: 13px; padding: 10px; }
+
 .result {
 background: #f2f2f2;
 padding: 14px;
@@ -85,10 +153,13 @@ display: flex;
 align-items: center;
 justify-content: center;
 }
+body.dark .result { background: #2a2a3a; }
 .result.orange { color: #e67e22; }
 .result.green { color: #27ae60; }
 .result.red { color: #e74c3c; }
 .result.blue { color: #2980b9; }
+.result.purple { color: #8e44ad; }
+
 .hint-box {
 background: #f3e5f5;
 padding: 10px;
@@ -97,6 +168,11 @@ margin-top: 10px;
 text-align: center;
 color: #6c3483;
 }
+body.dark .hint-box {
+background: #2a1a3a;
+color: #bb86fc;
+}
+
 .btn-row {
 display: flex;
 gap: 8px;
@@ -104,6 +180,7 @@ margin-top: 10px;
 flex-wrap: wrap;
 }
 .btn-row .btn { flex: 1; font-size: 15px; padding: 12px; min-width: 52px; }
+
 .leaderboard {
 background: #f2f2f2;
 border-radius: 14px;
@@ -111,6 +188,7 @@ padding: 14px;
 margin-top: 18px;
 display: none;
 }
+body.dark .leaderboard { background: #2a2a3a; }
 .leaderboard.show { display: block; }
 .leaderboard h3 { text-align: center; margin-bottom: 8px; }
 .leaderboard-item {
@@ -120,7 +198,9 @@ padding: 6px 10px;
 border-bottom: 1px solid #ddd;
 font-size: 15px;
 }
+body.dark .leaderboard-item { border-bottom-color: #444; }
 .leaderboard-item:last-child { border-bottom: none; }
+
 .name-input-overlay {
 position: fixed;
 top: 0; left: 0;
@@ -140,6 +220,10 @@ max-width: 300px;
 width: 90%;
 text-align: center;
 }
+body.dark .name-input-box {
+background: #2a2a3a;
+color: #eee;
+}
 .name-input-box input {
 width: 100%;
 padding: 12px;
@@ -148,7 +232,13 @@ border-radius: 10px;
 border: 2px solid #ddd;
 margin-bottom: 12px;
 }
+body.dark .name-input-box input {
+background: #1a1a2a;
+border-color: #444;
+color: #eee;
+}
 .name-input-box .btn { width: 100%; }
+
 .achievement {
 position: fixed;
 top: 20px;
@@ -164,6 +254,16 @@ z-index: 1000;
 display: none;
 }
 .achievement.show { display: block; }
+
+.time-warning {
+color: #e74c3c;
+animation: pulse 0.5s infinite alternate;
+}
+@keyframes pulse {
+from { opacity: 1; }
+to { opacity: 0.4; }
+}
+
 @media (max-width: 400px) {
 .container { padding: 16px 12px; }
 h1 { font-size: 22px; }
@@ -189,11 +289,17 @@ input { font-size: 18px; padding: 10px; }
 <h1>🎯 Угадай число</h1>
 <div class="subtitle" id="subtitle">От 1 до 100</div>
 
+<!-- Переключатель режимов -->
+<div class="mode-switch">
+<button class="mode-btn active" data-mode="classic" id="modeClassic">♾️ Без времени</button>
+<button class="mode-btn" data-mode="timed" id="modeTimed">⏱️ На время (30с)</button>
+</div>
+
 <div class="stats">
 <div class="stat-item">🏆 Очки<br><span class="stat-value green" id="scoreDisplay">0</span></div>
 <div class="stat-item">👑 Рекорд<br><span class="stat-value gold" id="bestDisplay">0</span></div>
 <div class="stat-item">📊 Попытки<br><span class="stat-value blue" id="attemptsDisplay">0/10</span></div>
-<div class="stat-item">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
+<div class="stat-item" id="timerStat">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
 </div>
 
 <div class="input-area">
@@ -226,57 +332,293 @@ input { font-size: 18px; padding: 10px; }
 </div>
 </div>
 
-<!-- VK BRIDGE — гарантированная инициализация -->
+<!-- VK BRIDGE -->
 <script src="https://vk.com/js/api/xd_connection.js?2"></script>
 <script>
-// Простая и надёжная инициализация VK Mini App
 function initVK() {
 try {
 if (typeof VK !== 'undefined' && VK.init) {
 VK.init(function() {
-// Сигнал о полной загрузке
-if (typeof VKWebAppInit !== 'undefined') {
-VKWebAppInit();
-}
-// Подгоняем размер под контент
-if (VK.callMethod) {
-VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
-}
+if (typeof VKWebAppInit !== 'undefined') VKWebAppInit();
+if (VK.callMethod) VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
 console.log('✅ VK Mini App инициализирован');
 }, function(error) {
-console.warn('⚠️ VK инициализация с ошибкой, но приложение работает:', error);
-// Даже если ошибка — даём сигнал вручную
-if (typeof VKWebAppInit !== 'undefined') {
-VKWebAppInit();
-}
+console.warn('⚠️ VK инициализация с ошибкой:', error);
+if (typeof VKWebAppInit !== 'undefined') VKWebAppInit();
 });
 } else {
-console.warn('⚠️ VK Bridge не загружен, пробуем альтернативный способ');
-// Альтернативный сигнал для VK
-if (typeof window.VKWebAppInit === 'function') {
-window.VKWebAppInit();
-}
+if (typeof window.VKWebAppInit === 'function') window.VKWebAppInit();
 }
 } catch (e) {
-console.warn('⚠️ Ошибка инициализации VK, но приложение продолжает работать:', e);
+console.warn('⚠️ Ошибка VK:', e);
 }
 }
-
-// Запускаем инициализацию когда страница загружена
-if (document.readyState === 'complete') {
-initVK();
-} else {
-window.addEventListener('load', initVK);
-}
-
-// На случай, если VK не загрузился — повторная попытка через 1 секунду
+if (document.readyState === 'complete') initVK();
+else window.addEventListener('load', initVK);
 setTimeout(initVK, 1000);
 </script>
 
 <script>
 // ============================================================
-// 2. ТАБЛИЦА ЛИДЕРОВ
+// ИГРА
 // ============================================================
+let secret = Math.floor(Math.random() * 100) + 1;
+let attempts = 0;
+let score = 0;
+let totalScore = parseInt(localStorage.getItem('totalScore')) || 0;
+let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
+let timer = 0;
+let maxTime = 30;
+let timerInterval = null;
+let isGameActive = false;
+let isTimedMode = false;
+let level = 'easy';
+let currentPoints = 0;
+let guessedCount = 0;
+let achievements = { firstTry: false, master: false, pro: false };
+
+const levels = {
+easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
+medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
+hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
+};
+
+const $ = id => document.getElementById(id);
+const input = $('guessInput');
+const checkBtn = $('checkBtn');
+const newBtn = $('newBtn');
+const hintBtn = $('hintBtn');
+const themeBtn = $('themeBtn');
+const leaderboardBtn = $('leaderboardBtn');
+const modeClassic = $('modeClassic');
+const modeTimed = $('modeTimed');
+const resultDisplay = $('resultDisplay');
+const hintDisplay = $('hintDisplay');
+const scoreDisplay = $('scoreDisplay');
+const bestDisplay = $('bestDisplay');
+const attemptsDisplay = $('attemptsDisplay');
+const timerDisplay = $('timerDisplay');
+const timerStat = $('timerStat');
+const achievementDiv = $('achievement');
+const diffBtns = document.querySelectorAll('.btn-difficulty');
+const nameOverlay = $('nameOverlay');
+const nameInput = $('nameInput');
+const saveNameBtn = $('saveNameBtn');
+
+function updateUI() {
+scoreDisplay.textContent = totalScore;
+bestDisplay.textContent = bestScore;
+attemptsDisplay.textContent = isTimedMode ? guessedCount : `${attempts}/${levels[level].attempts}`;
+if (isTimedMode) {
+timerDisplay.textContent = Math.max(0, maxTime - timer);
+timerDisplay.className = 'stat-value ' + (maxTime - timer <= 5 ? 'red' : 'purple');
+} else {
+timerDisplay.textContent = timer;
+timerDisplay.className = 'stat-value purple';
+}
+}
+
+function showAchievement(text) {
+achievementDiv.textContent = text;
+achievementDiv.classList.add('show');
+setTimeout(() => achievementDiv.classList.remove('show'), 2500);
+}
+
+function startTimer() {
+if (timerInterval) return;
+timer = 0;
+isGameActive = true;
+timerInterval = setInterval(() => {
+timer++;
+updateUI();
+if (isTimedMode && timer >= maxTime) {
+endTimedGame();
+}
+}, 1000);
+}
+
+function stopTimer() {
+clearInterval(timerInterval);
+timerInterval = null;
+isGameActive = false;
+}
+
+function endTimedGame() {
+stopTimer();
+input.disabled = true;
+checkBtn.disabled = true;
+const points = guessedCount * 10;
+totalScore += points;
+localStorage.setItem('totalScore', totalScore);
+if (points > bestScore) {
+bestScore = points;
+localStorage.setItem('bestScore', bestScore);
+}
+resultDisplay.textContent = `⏱️ Время вышло! Угадано: ${guessedCount} чисел (+${points} очков)`;
+resultDisplay.className = 'result orange';
+updateUI();
+if (isTopScore(totalScore)) {
+const playerName = localStorage.getItem('playerName');
+if (playerName) addScore(playerName, totalScore, guessedCount, maxTime);
+else { nameOverlay.classList.add('show'); nameInput.focus(); }
+}
+}
+
+function checkGuess() {
+const raw = input.value.trim();
+if (raw === '') {
+resultDisplay.textContent = '⚠️ Введи число!';
+resultDisplay.className = 'result red';
+return;
+}
+const guess = parseInt(raw);
+const maxNum = levels[level].max;
+if (isNaN(guess) || guess < 1 || guess > maxNum) {
+resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
+resultDisplay.className = 'result red';
+return;
+}
+
+if (!isGameActive) startTimer();
+
+if (isTimedMode) {
+// Режим на время — после каждого угаданного числа генерируем новое
+if (guess === secret) {
+guessedCount++;
+secret = Math.floor(Math.random() * maxNum) + 1;
+resultDisplay.textContent = `✅ +1! Угадано: ${guessedCount}`;
+resultDisplay.className = 'result green';
+input.value = '';
+input.focus();
+updateUI();
+return;
+} else {
+resultDisplay.textContent = guess < secret ? '❌ Мало! Попробуй ещё' : '❌ Много! Попробуй ещё';
+resultDisplay.className = 'result orange';
+input.value = '';
+input.focus();
+return;
+}
+}
+
+// Классический режим
+attempts++;
+const remaining = levels[level].attempts - attempts;
+
+if (guess < secret) {
+resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
+resultDisplay.className = 'result orange';
+} else if (guess > secret) {
+resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
+resultDisplay.className = 'result orange';
+} else {
+stopTimer();
+const bonus = levels[level].bonus;
+currentPoints = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
+currentPoints = Math.max(currentPoints, 1);
+totalScore += currentPoints;
+localStorage.setItem('totalScore', totalScore);
+if (currentPoints > bestScore) {
+bestScore = currentPoints;
+localStorage.setItem('bestScore', bestScore);
+}
+resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${currentPoints} очков 🕐${timer}с`;
+resultDisplay.className = 'result green';
+input.disabled = true;
+checkBtn.disabled = true;
+
+if (attempts === 1 && !achievements.firstTry) {
+achievements.firstTry = true;
+showAchievement('🎯 С первого раза! Ты гений!');
+}
+if (attempts <= 3 && !achievements.master) {
+achievements.master = true;
+showAchievement('🏆 Мастер! Отличная интуиция!');
+}
+if (attempts <= 5 && !achievements.pro) {
+achievements.pro = true;
+showAchievement('🌟 Профи! Ты на высоте!');
+}
+
+updateUI();
+if (isTopScore(totalScore)) {
+const playerName = localStorage.getItem('playerName');
+if (playerName) addScore(playerName, totalScore, attempts, timer);
+else { nameOverlay.classList.add('show'); nameInput.focus(); }
+}
+return;
+}
+
+if (attempts >= levels[level].attempts) {
+stopTimer();
+resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
+resultDisplay.className = 'result red';
+input.disabled = true;
+checkBtn.disabled = true;
+}
+updateUI();
+input.value = '';
+input.focus();
+}
+
+function newGame() {
+stopTimer();
+const maxNum = levels[level].max;
+secret = Math.floor(Math.random() * maxNum) + 1;
+attempts = 0;
+guessedCount = 0;
+timer = 0;
+timerDisplay.textContent = isTimedMode ? maxTime : '0';
+isGameActive = false;
+input.disabled = false;
+checkBtn.disabled = false;
+input.value = '';
+if (isTimedMode) {
+resultDisplay.textContent = `⏱️ Угадай как можно больше чисел за ${maxTime}с!`;
+resultDisplay.className = 'result purple';
+attemptsDisplay.textContent = '0';
+timerDisplay.textContent = maxTime;
+} else {
+resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
+resultDisplay.className = 'result blue';
+attemptsDisplay.textContent = `0/${levels[level].attempts}`;
+timerDisplay.textContent = '0';
+}
+hintDisplay.textContent = '💡 Нажми "Подсказка"';
+achievements = { firstTry: false, master: false, pro: false };
+updateUI();
+input.focus();
+}
+
+function showHint() {
+const maxNum = levels[level].max;
+const mid = Math.floor(maxNum / 2);
+hintDisplay.textContent = secret < mid ? `💡 Число МЕНЬШЕ ${mid}` : `💡 Число БОЛЬШЕ ${mid}`;
+}
+
+function toggleTheme() {
+document.body.classList.toggle('dark');
+themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+}
+
+function setLevel(lvl) {
+level = lvl;
+diffBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.level === lvl));
+document.getElementById('subtitle').textContent = levels[lvl].label;
+newGame();
+}
+
+function setMode(mode) {
+isTimedMode = (mode === 'timed');
+modeClassic.classList.toggle('active', !isTimedMode);
+modeTimed.classList.toggle('active', isTimedMode);
+timerStat.innerHTML = isTimedMode ? '⏱️ Осталось<br><span class="stat-value purple" id="timerDisplay">30</span>' :
+'⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span>';
+document.getElementById('timerDisplay').textContent = isTimedMode ? maxTime : '0';
+newGame();
+}
+
+// Таблица лидеров
 function getLeaderboard() {
 const data = localStorage.getItem('leaderboard');
 return data ? JSON.parse(data) : [];
@@ -323,206 +665,23 @@ document.getElementById('leaderboardBtn').textContent = board.classList.contains
 if (board.classList.contains('show')) renderLeaderboard();
 }
 
-// ============================================================
-// 3. ИГРА
-// ============================================================
-let secret = Math.floor(Math.random() * 100) + 1;
-let attempts = 0;
-let score = 0;
-let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-let timer = 0;
-let timerInterval = null;
-let isGameActive = false;
-let level = 'easy';
-let currentPoints = 0;
-let achievements = { firstTry: false, master: false, pro: false };
+// События
+checkBtn.addEventListener('click', checkGuess);
+newBtn.addEventListener('click', newGame);
+hintBtn.addEventListener('click', showHint);
+themeBtn.addEventListener('click', toggleTheme);
+leaderboardBtn.addEventListener('click', toggleLeaderboard);
+modeClassic.addEventListener('click', () => setMode('classic'));
+modeTimed.addEventListener('click', () => setMode('timed'));
 
-const levels = {
-easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
-medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
-hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
-};
+input.addEventListener('keydown', e => { if (e.key === 'Enter') checkGuess(); });
 
-const $ = id => document.getElementById(id);
-const input = $('guessInput');
-const checkBtn = $('checkBtn');
-const newBtn = $('newBtn');
-const hintBtn = $('hintBtn');
-const themeBtn = $('themeBtn');
-const leaderboardBtn = $('leaderboardBtn');
-const resultDisplay = $('resultDisplay');
-const hintDisplay = $('hintDisplay');
-const scoreDisplay = $('scoreDisplay');
-const bestDisplay = $('bestDisplay');
-const attemptsDisplay = $('attemptsDisplay');
-const timerDisplay = $('timerDisplay');
-const achievementDiv = $('achievement');
-const diffBtns = document.querySelectorAll('.btn-difficulty');
-const nameOverlay = $('nameOverlay');
-const nameInput = $('nameInput');
-const saveNameBtn = $('saveNameBtn');
-
-function updateUI() {
-scoreDisplay.textContent = score;
-bestDisplay.textContent = bestScore;
-attemptsDisplay.textContent = `${attempts}/${levels[level].attempts}`;
-}
-
-function showAchievement(text) {
-achievementDiv.textContent = text;
-achievementDiv.classList.add('show');
-setTimeout(() => achievementDiv.classList.remove('show'), 2500);
-}
-
-function startTimer() {
-if (timerInterval) return;
-timer = 0;
-timerDisplay.textContent = '0';
-isGameActive = true;
-timerInterval = setInterval(() => {
-timer++;
-timerDisplay.textContent = timer;
-}, 1000);
-}
-
-function stopTimer() {
-clearInterval(timerInterval);
-timerInterval = null;
-isGameActive = false;
-}
-
-function checkGuess() {
-const raw = input.value.trim();
-if (raw === '') {
-resultDisplay.textContent = '⚠️ Введи число!';
-resultDisplay.className = 'result red';
-return;
-}
-const guess = parseInt(raw);
-const maxNum = levels[level].max;
-if (isNaN(guess) || guess < 1 || guess > maxNum) {
-resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
-resultDisplay.className = 'result red';
-return;
-}
-
-if (!isGameActive) startTimer();
-attempts++;
-const remaining = levels[level].attempts - attempts;
-
-if (guess < secret) {
-resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
-resultDisplay.className = 'result orange';
-} else if (guess > secret) {
-resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
-resultDisplay.className = 'result orange';
-} else {
-stopTimer();
-const bonus = levels[level].bonus;
-currentPoints = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
-currentPoints = Math.max(currentPoints, 1);
-score += currentPoints;
-if (score > bestScore) {
-bestScore = score;
-localStorage.setItem('bestScore', bestScore);
-}
-resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${currentPoints} очков 🕐${timer}с`;
-resultDisplay.className = 'result green';
-input.disabled = true;
-checkBtn.disabled = true;
-if (attempts === 1 && !achievements.firstTry) {
-achievements.firstTry = true;
-showAchievement('🎯 С первого раза! Ты гений!');
-}
-if (attempts <= 3 && !achievements.master) {
-achievements.master = true;
-showAchievement('🏆 Мастер! Отличная интуиция!');
-}
-if (attempts <= 5 && !achievements.pro) {
-achievements.pro = true;
-showAchievement('🌟 Профи! Ты на высоте!');
-}
-updateUI();
-if (isTopScore(currentPoints)) {
-const playerName = localStorage.getItem('playerName');
-if (playerName) {
-addScore(playerName, currentPoints, attempts, timer);
-} else {
-nameOverlay.classList.add('show');
-nameInput.focus();
-}
-}
-return;
-}
-
-if (attempts >= levels[level].attempts) {
-stopTimer();
-resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
-resultDisplay.className = 'result red';
-input.disabled = true;
-checkBtn.disabled = true;
-}
-updateUI();
-input.value = '';
-input.focus();
-}
-
-function newGame() {
-stopTimer();
-const maxNum = levels[level].max;
-secret = Math.floor(Math.random() * maxNum) + 1;
-attempts = 0;
-timer = 0;
-timerDisplay.textContent = '0';
-isGameActive = false;
-input.disabled = false;
-checkBtn.disabled = false;
-input.value = '';
-resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
-resultDisplay.className = 'result blue';
-hintDisplay.textContent = '💡 Нажми "Подсказка"';
-achievements = { firstTry: false, master: false, pro: false };
-updateUI();
-input.focus();
-}
-
-function showHint() {
-const maxNum = levels[level].max;
-const mid = Math.floor(maxNum / 2);
-hintDisplay.textContent = secret < mid ? `💡 Число МЕНЬШЕ ${mid}` : `💡 Число БОЛЬШЕ ${mid}`;
-}
-
-function toggleTheme() {
-document.body.classList.toggle('dark');
-themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-const c = document.querySelector('.container');
-if (c) c.style.background = document.body.classList.contains('dark') ? '#1e1e2e' : 'white';
-}
-
-function setLevel(lvl) {
-level = lvl;
-diffBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.level === lvl));
-document.getElementById('subtitle').textContent = levels[lvl].label;
-const maxNum = levels[lvl].max;
-secret = Math.floor(Math.random() * maxNum) + 1;
-attempts = 0;
-timer = 0;
-timerDisplay.textContent = '0';
-isGameActive = false;
-input.disabled = false;
-checkBtn.disabled = false;
-input.value = '';
-resultDisplay.textContent = `🎮 Новый уровень! (1-${maxNum})`;
-resultDisplay.className = 'result blue';
-hintDisplay.textContent = '💡 Нажми "Подсказка"';
-updateUI();
-input.focus();
-}
+diffBtns.forEach(btn => btn.addEventListener('click', () => setLevel(btn.dataset.level)));
 
 saveNameBtn.addEventListener('click', function() {
 const name = nameInput.value.trim() || 'Игрок';
 localStorage.setItem('playerName', name);
-addScore(name, currentPoints, attempts, timer);
+addScore(name, totalScore, isTimedMode ? guessedCount : attempts, isTimedMode ? maxTime : timer);
 nameOverlay.classList.remove('show');
 renderLeaderboard();
 if (document.getElementById('leaderboard').classList.contains('show')) renderLeaderboard();
@@ -530,20 +689,13 @@ if (document.getElementById('leaderboard').classList.contains('show')) renderLea
 
 nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveNameBtn.click(); });
 
-// Вешаем события
-checkBtn.addEventListener('click', checkGuess);
-newBtn.addEventListener('click', newGame);
-hintBtn.addEventListener('click', showHint);
-themeBtn.addEventListener('click', toggleTheme);
-leaderboardBtn.addEventListener('click', toggleLeaderboard);
-input.addEventListener('keydown', e => { if (e.key === 'Enter') checkGuess(); });
-diffBtns.forEach(btn => btn.addEventListener('click', () => setLevel(btn.dataset.level)));
-
 // Старт
-updateUI();
-input.focus();
 const savedName = localStorage.getItem('playerName');
 if (savedName) nameInput.value = savedName;
+updateUI();
+newGame();
+input.focus();
 </script>
 </body>
 </html>
+
