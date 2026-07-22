@@ -4,46 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Угадай число</title>
-    <!-- Подключаем VKUI (стили и компоненты) -->
+    
+    <!-- VKUI Styles -->
     <link rel="stylesheet" href="https://unpkg.com/@vkontakte/vkui@4.18.0/dist/vkui.min.css">
-    <!-- Подключаем VK Bridge -->
+    
+    <!-- VK Bridge Script -->
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--vkui--color_background);
-            color: var(--vkui--color_text_primary);
+            background-color: var(--vkui--color_background, #ffffff);
+            color: var(--vkui--color_text_primary, #000000);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 16px;
+            box-sizing: border-box;
         }
         .game-container {
             width: 100%;
             max-width: 400px;
         }
+        h2 { margin-top: 0; margin-bottom: 16px; text-align: center; }
+        
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 16px;
-            background: var(--vkui--color_background_secondary);
+            background: var(--vkui--color_background_secondary, #f0f2f5);
             padding: 12px;
             border-radius: 12px;
         }
-        .stat-label {
-            font-size: 12px;
-            color: var(--vkui--color_text_secondary);
-        }
-        .stat-value {
-            font-weight: 600;
-            text-align: right;
-        }
-        .input-group {
-            margin-bottom: 16px;
-        }
+        .stat-label { font-size: 12px; color: var(--vkui--color_text_secondary, #818c99); }
+        .stat-value { font-weight: 600; text-align: right; }
+        
+        .input-group { margin-bottom: 16px; }
+        
         .level-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -51,23 +51,24 @@
             margin-bottom: 16px;
             justify-content: center;
         }
-        .vkui-Button {
-            min-width: 120px;
-        }
+        
         .message {
             min-height: 24px;
             text-align: center;
             margin-bottom: 16px;
             font-weight: 500;
         }
-        .msg-success { color: var(--vkui--color_green); }
-        .msg-error { color: var(--vkui--color_red); }
+        .msg-success { color: var(--vkui--color_green, #00b076); }
+        .msg-error { color: var(--vkui--color_red, #ff3b30); }
+
+        /* Адаптация кнопок VKUI */
+        .vkuiButton { min-width: 120px; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <h2 style="margin-top: 0; margin-bottom: 16px; text-align: center;">Угадай число!</h2>
+    <h2>Угадай число!</h2>
 
     <div class="stats-grid">
         <div><span class="stat-label">Очки:</span> <span class="stat-value" id="score">0</span></div>
@@ -78,7 +79,7 @@
 
     <div class="input-group">
         <div id="input-wrapper" style="display: none;">
-            <div id="input-label" class="vkuiFormItem__before">Введите число</div>
+            <div class="vkuiFormItem__before">Введите число</div>
             <input type="number" id="guessInput" class="vkuiFormItem__input" inputmode="numeric" pattern="[0-9]*" disabled>
         </div>
     </div>
@@ -106,19 +107,32 @@
     </div>
 </div>
 
+<!-- VKUI Core JS (опционально, если нужны сложные компоненты, но для кнопок и стилей достаточно CSS) -->
 <script src="https://unpkg.com/@vkontakte/vkui@4.18.0/dist/vkui.js"></script>
+
 <script>
     // --- Инициализация VK Bridge ---
     const bridge = window.VKBridge;
 
-    bridge.send('VKWebAppInit').then(data => {
-        console.log('VK Bridge initialized:', data);
-        // Здесь можно получить данные пользователя, если нужно
-        // bridge.send('VKWebAppGetUserInfo').then(userInfo => { ... });
-    }).catch(error => {
-        console.error('VK Bridge init error:', error);
-        // Если не в VK — работаем как обычный сайт
-    });
+    // ВАЖНО: Это событие обязательно для модерации
+    function initBridge() {
+        if (bridge) {
+            bridge.send('VKWebAppInit')
+                .then(data => {
+                    console.log('VK Bridge initialized:', data);
+                    // Здесь можно обработать launchParams, если нужно
+                    // Например, получить тему оформления
+                })
+                .catch(error => {
+                    console.error('VK Bridge init error:', error);
+                    // Если ошибка - работаем как обычный сайт (fallback)
+                    showMessage('Режим: Автономный (не в VK)', 'error');
+                });
+        } else {
+            console.warn('VK Bridge not found. Running in standalone mode.');
+            showMessage('Режим: Автономный (не в VK)', 'error');
+        }
+    }
 
     // --- Переменные состояния ---
     let secretNumber;
@@ -144,13 +158,14 @@
         hintBtn: document.getElementById('hintBtn')
     };
 
-    // --- Инициализация ---
+    // --- Логика игры ---
+
     function init() {
         loadRecord();
         updateUI();
+        // Запускаем инициализацию моста сразу после загрузки DOM
+        initBridge(); 
     }
-
-    // --- Логика игры ---
 
     function startGame(timed) {
         isTimed = timed;
@@ -174,6 +189,7 @@
             case 'medium': maxNumber = 100; break;
             case 'hard': maxNumber = 200; break;
         }
+        // Если игра уже идет, меняем диапазон, но не сбрасываем счет
         if (!els.input.disabled) {
             generateNumber();
         }
@@ -182,7 +198,7 @@
 
     function generateNumber() {
         secretNumber = Math.floor(Math.random() * maxNumber) + 1;
-        console.log("Secret:", secretNumber);
+        console.log("Secret number generated:", secretNumber);
     }
 
     function checkGuess() {
@@ -247,7 +263,7 @@
         if (win) {
             showMessage("🎉 Победа! Ты угадал число!", 'success');
         } else {
-            showMessage("😞 Игра окончена. Число было: " + secretNumber, 'error');
+            showMessage("😞 Игра окончена. Загаданное число: " + secretNumber, 'error');
         }
     }
 
@@ -261,7 +277,6 @@
                 els.timer.innerText = timeLeft;
                 if (timeLeft <= 0) {
                     endGame(false);
-                    updateUI();
                 }
             }, 1000);
         } else {
@@ -269,77 +284,50 @@
         }
     }
 
-    function newGame() {
-        clearInterval(timerInterval);
-        init();
-        els.input.value = "";
-        els.input.disabled = true;
-        els.inputWrapper.style.display = 'none';
-        els.checkBtn.classList.add('vkuiButton--disabled');
-        els.hintBtn.classList.add('vkuiButton--disabled');
-        showMessage("", "");
-    }
-
     function updateUI() {
         els.score.innerText = score;
         els.record.innerText = record;
         els.attempts.innerText = (10 - attemptsLeft) + "/10";
         
-        if (attemptsLeft <= 0 || (isTimed && timeLeft <= 0)) {
-            els.checkBtn.classList.add('vkuiButton--disabled');
-        } else {
-            els.checkBtn.classList.remove('vkuiButton--disabled');
-        }
-
-        if (attemptsLeft <= 0) {
-            els.hintBtn.classList.add('vkuiButton--disabled');
-        } else {
-            els.hintBtn.classList.remove('vkuiButton--disabled');
+        if (els.input.disabled) {
+            els.input.value = "";
         }
     }
 
     function showMessage(text, type) {
         els.message.innerText = text;
-        els.message.className = 'message ' + (type === 'success' ? 'msg-success' : 'msg-error');
-    }
-
-    // --- Сохранение данных ---
-    function saveRecord() {
-        if (score > record) {
-            record = score;
-            // Пробуем сохранить в VK Storage (если в VK)
-            if (typeof bridge !== 'undefined') {
-                bridge.send('VKWebAppStorageSet', { key: 'guessNumberRecord', value: record.toString() })
-                    .catch(() => localStorage.setItem('guessNumberRecord', record));
-            } else {
-                localStorage.setItem('guessNumberRecord', record);
-            }
-            els.record.innerText = record;
+        els.message.className = 'message';
+        if (type === 'success') {
+            els.message.classList.add('msg-success');
+        } else if (type === 'error') {
+            els.message.classList.add('msg-error');
         }
     }
 
     function loadRecord() {
-        // Пробуем загрузить из VK Storage
-        if (typeof bridge !== 'undefined') {
-            bridge.send('VKWebAppStorageGet', { key: 'guessNumberRecord' })
-                .then(data => {
-                    if (data && data.value) {
-                        record = parseInt(data.value);
-                        els.record.innerText = record;
-                    }
-                })
-                .catch(() => {
-                    const saved = localStorage.getItem('guessNumberRecord');
-                    if (saved) record = parseInt(saved);
-                });
-        } else {
-            const saved = localStorage.getItem('guessNumberRecord');
-            if (saved) record = parseInt(saved);
+        const stored = localStorage.getItem('guess_number_record');
+        if (stored) record = parseInt(stored);
+        updateUI();
+    }
+
+    function saveRecord() {
+        if (score > record) {
+            record = score;
+            localStorage.setItem('guess_number_record', record);
+            updateUI();
         }
     }
 
-    // Запуск при загрузке
-    init();
+    function newGame() {
+        startGame(false);
+    }
+
+    // Запуск инициализации после загрузки страницы
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 </script>
 
 </body>
