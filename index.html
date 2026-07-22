@@ -2,290 +2,111 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Угадай число</title>
     <style>
-        :root {
-            --bg-page: #f5f5f5;
-            --bg-content: #ffffff;
-            --text-primary: #000000;
-            --text-secondary: #818c99;
-            --accent: #0077FF;
-            --status-positive: #00b300;
-            --status-negative: #ff3333;
-            --border: #e6e9ed;
-        }
-
-        /* Переопределение переменных VKUI для совместимости, если приложение запущено не внутри VK */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 16px;
-            background-color: var(--vkui--background_page, var(--bg-page));
-            color: var(--vkui--text_primary, var(--text-primary));
-            box-sizing: border-box;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
         }
-
         .container {
             max-width: 400px;
             margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        h1 { 
-            margin-top: 0; 
-            font-size: 24px; 
-            text-align: center;
-        }
-
         .scoreboard {
             margin: 20px 0;
-            padding: 16px;
-            background: var(--vkui--background_content, var(--bg-content));
-            border-radius: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            border: 1px solid var(--vkui--border_base, var(--border));
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
         }
-
-        .score-row { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 8px; 
-            font-size: 14px; 
-            color: var(--vkui--text_secondary, var(--text-secondary));
-        }
-
-        .score-value { 
-            font-weight: 600; 
-            color: var(--vkui--accent_normal, var(--accent)); 
-        }
-
-        input {
+        input[type="number"] {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid var(--vkui--border_base, var(--border));
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
-            outline: none;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
         }
-
         button {
-            padding: 12px 16px;
-            margin: 4px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--vkui--accent_normal, var(--accent));
+            padding: 10px 15px;
+            margin: 5px;
+            background: #007bff;
             color: white;
-            font-size: 14px;
-            font-weight: 500;
-            transition: opacity 0.2s;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-
-        button:active { opacity: 0.8; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; background-color: var(--border); }
-
-        #message { 
-            margin-top: 16px; 
-            font-weight: 500; 
-            min-height: 20px; 
-            text-align: center;
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
         }
-
-        .success { color: var(--vkui--text_status_positive, var(--status-positive)); }
-        .error { color: var(--vkui--text_status_negative, var(--status-negative)); }
-
-        .controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 16px;
+        .success {
+            background: #e6ffed;
+            color: #28a745;
         }
-
-        @media (max-width: 320px) {
-            .controls-grid { grid-template-columns: 1fr; }
+        .error {
+            background: #ffe6e6;
+            color: #dc3545;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Угадай число!</h1>
+        <h2>Угадай число!</h2>
         
         <div class="scoreboard">
-            <div class="score-row"><span>🏆 Очки:</span> <span id="score" class="score-value">0</span></div>
-            <div class="score-row"><span>👑 Рекорд:</span> <span id="record" class="score-value">0</span></div>
-            <div class="score-row"><span>📊 Попытки:</span> <span id="attempts" class="score-value">0/10</span></div>
-            <div class="score-row"><span>⏱️ Время:</span> <span id="timer" class="score-value">0</span> сек</div>
+            <div>🏆 Очки: <span id="score">0</span></div>
+            <div>👑 Рекорд: <span id="record">0</span></div>
+            <div>🎯 Попытки: <span id="attempts">0/10</span></div>
+            <div>⏲ Время: <span id="timer">0</span> сек</div>
         </div>
-
-        <input type="number" id="guessInput" placeholder="Введите число" disabled autocomplete="off">
-        <button onclick="checkGuess()" disabled id="checkBtn">✅ Проверить</button>
-
-        <div id="message"></div>
-
-        <div style="margin-top: 20px;">
-            <div class="controls-grid">
-                <button onclick="startGame(false)">♾ Без времени</button>
-                <button onclick="startGame(true)">⏱ На время (30с)</button>
-            </div>
-            
-            <div class="controls-grid">
-                <button onclick="setDifficulty('easy')">🟢 Лёгкий (1-50)</button>
-                <button onclick="setDifficulty('medium')">🟡 Средний (1-100)</button>
-                <button onclick="setDifficulty('hard')" style="grid-column: span 2;">🔴 Сложный (1-200)</button>
-            </div>
-
-            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
-                <button onclick="showHint()" disabled id="hintBtn">💡 Подсказка</button>
-                <button onclick="newGame()" style="background-color: transparent; border: 1px solid var(--border); color: var(--text-secondary);">🔄 Новая игра</button>
-            </div>
+        
+        <input type="number" id="guessInput" placeholder="Введите число" disabled>
+        <button onclick="checkGuess()" disabled>Проверить</button>
+        
+        <div id="message" class="message"></div>
+        
+        <div>
+            <button onclick="startGame(false)">Без времени</button>
+            <button onclick="startGame(true)">На время</button>
         </div>
+        
+        <div>
+            <button onclick="setLevel('easy')">Легкий (1-50)</button>
+            <button onclick="setLevel('medium')">Средний (1-100)</button>
+            <button onclick="setLevel('hard')">Сложный (1-200)</button>
+        </div>
+        
+        <button onclick="showHint()" disabled>Подсказка</button>
+        <button onclick="newGame()">Новая игра</button>
     </div>
 
-    <!-- 1. ПОДКЛЮЧЕНИЕ VK BRIDGE -->
+    <!-- VK Bridge -->
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-
     <script>
-        // 2. ОТПРАВКА СОБЫТИЯ ИНИЦИАЛИЗАЦИИ (КРИТИЧЕСКИ ВАЖНО)
-        // Это говорит ВКонтакте: "Приложение загрузилось".
+        // Инициализация VK Bridge
         vkBridge.send('VKWebAppInit');
-
+        
         let secretNumber;
         let maxNumber = 100;
         let attemptsLeft = 10;
         let score = 0;
         let record = 0;
-        let timerInterval;
+        let timer;
         let isTimed = false;
         let timeLeft = 30;
-        let difficulty = 'medium';
-
-        // 3. ОБРАБОТКА ОТВЕТА ОТ VK BRIDGE
-        // Интерфейс разблокируется ТОЛЬКО после подтверждения от платформы.
+        let level = 'medium';
+        
+        // Обработка инициализации
         vkBridge.on('VKWebAppInit', () => {
             document.getElementById('guessInput').disabled = false;
-            document.getElementById('checkBtn').disabled = false;
-            document.getElementById('hintBtn').disabled = false;
-            showMessage('Приложение готово! Выберите режим и начните игру.', 'success');
-        });
+            document.querySelector('button[onclick="checkGuess()"]').disabled = false;
+            document.querySelector('button[onclick
 
-        function setDifficulty(level) {
-            difficulty = level;
-            if (level === 'easy') maxNumber = 50;
-            else if (level === 'hard') maxNumber = 200;
-            else maxNumber = 100;
-            
-            showMessage(`Сложность: ${level}. Диапазон: 1-${maxNumber}`);
-        }
-
-        function startGame(timed) {
-            isTimed = timed;
-            resetGame();
-            generateNumber();
-            
-            const modeText = timed ? 'Режим на время (30 сек)' : 'Режим без времени';
-            showMessage(`Игра началась! ${modeText}. Угадай число от 1 до ${maxNumber}`);
-        }
-
-        function resetGame() {
-            attemptsLeft = 10;
-            timeLeft = 30;
-            clearInterval(timerInterval);
-            document.getElementById('attempts').innerText = attemptsLeft + '/10';
-            document.getElementById('score').innerText = score;
-            document.getElementById('guessInput').value = '';
-            document.getElementById('message').className = '';
-            document.getElementById('message').innerText = '';
-            
-            if (isTimed) {
-                timerInterval = setInterval(updateTimer, 1000);
-                updateTimer();
-            }
-        }
-
-        function generateNumber() {
-            secretNumber = Math.floor(Math.random() * maxNumber) + 1;
-            // Для отладки в консоли можно раскомментировать, но в продакшене лучше скрыть
-            // console.log('Secret number:', secretNumber); 
-        }
-
-        function checkGuess() {
-            const input = document.getElementById('guessInput');
-            const guess = parseInt(input.value);
-
-            if (isNaN(guess) || guess < 1 || guess > maxNumber) {
-                showMessage(`Пожалуйста, введите число от 1 до \${maxNumber}`, 'error');
-                return;
-            }
-
-            attemptsLeft--;
-            document.getElementById('attempts').innerText = attemptsLeft + '/10';
-
-            if (guess === secretNumber) {
-                score += calculateScore();
-                updateRecord();
-                showMessage('🎉 Победа! Ты угадал число!', 'success');
-                endGame();
-            } else if (attemptsLeft === 0) {
-                showMessage(`🚫 Проиграно. Число было \${secretNumber}`, 'error');
-                endGame();
-            } else {
-                showMessage(guess < secretNumber ? '👉 Число больше' : '👈 Число меньше');
-                input.select();
-            }
-        }
-
-        function calculateScore() {
-            let baseScore = 100;
-            let penalty = (10 - attemptsLeft) * 10; 
-            let timeBonus = isTimed ? timeLeft : 0;
-            
-            return Math.max(0, baseScore - penalty + timeBonus);
-        }
-
-        function updateRecord() {
-            if (score > record) {
-                record = score;
-                document.getElementById('record').innerText = record;
-            }
-        }
-
-        function updateTimer() {
-            if (timeLeft <= 0) {
-                showMessage('⏱ Время вышло!', 'error');
-                endGame();
-                return;
-            }
-            document.getElementById('timer').innerText = timeLeft;
-            timeLeft--;
-        }
-
-        function showHint() {
-            if (secretNumber % 2 === 0) {
-                showMessage('💡 Подсказка: число чётное.');
-            } else {
-                showMessage('💡 Подсказка: число нечётное.');
-            }
-        }
-
-        function endGame() {
-            clearInterval(timerInterval);
-            document.getElementById('guessInput').disabled = true;
-            document.getElementById('checkBtn').disabled = true;
-            document.getElementById('hintBtn').disabled = true;
-        }
-
-        function showMessage(text, type = '') {
-            const el = document.getElementById('message');
-            el.innerText = text;
-            el.className = type;
-        }
-
-        function newGame() {
-            location.reload();
-        }
-    </script>
-</body>
 </html>
 
