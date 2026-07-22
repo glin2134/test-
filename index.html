@@ -1,701 +1,291 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🎯 Угадай число</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-min-height: 100vh;
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 16px;
-transition: background 0.3s;
-}
-body.dark {
-background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-}
-.container {
-background: white;
-border-radius: 24px;
-padding: 24px 20px;
-max-width: 400px;
-width: 100%;
-box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-transition: background 0.3s;
-}
-body.dark .container {
-background: #1e1e2e;
-color: #eee;
-}
-h1 { text-align: center; font-size: 26px; margin-bottom: 4px; }
-.subtitle { text-align: center; color: #888; font-size: 14px; margin-bottom: 18px; }
-body.dark .subtitle { color: #aaa; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Угадай число</title>
+    <style>
+        :root {
+            --bg-page: #f5f5f5;
+            --bg-content: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #818c99;
+            --accent: #0077FF;
+            --status-positive: #00b300;
+            --status-negative: #ff3333;
+            --border: #e6e9ed;
+        }
 
-/* Переключатель режимов */
-.mode-switch {
-display: flex;
-gap: 8px;
-margin-bottom: 16px;
-background: #f0f0f0;
-border-radius: 14px;
-padding: 4px;
-}
-body.dark .mode-switch {
-background: #2a2a3a;
-}
-.mode-btn {
-flex: 1;
-padding: 10px;
-border: none;
-border-radius: 12px;
-font-size: 15px;
-font-weight: bold;
-cursor: pointer;
-transition: 0.2s;
-background: transparent;
-color: #666;
-}
-body.dark .mode-btn {
-color: #aaa;
-}
-.mode-btn.active {
-background: #667eea;
-color: white;
-box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-body.dark .mode-btn.active {
-background: #667eea;
-color: white;
-}
-.mode-btn:active { transform: scale(0.96); }
+        /* Переопределение переменных VKUI для совместимости, если приложение запущено не внутри VK */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: var(--vkui--background_page, var(--bg-page));
+            color: var(--vkui--text_primary, var(--text-primary));
+            box-sizing: border-box;
+        }
 
-.stats {
-display: flex;
-justify-content: space-between;
-background: #f2f2f2;
-padding: 10px 12px;
-border-radius: 14px;
-margin-bottom: 18px;
-font-size: 13px;
-text-align: center;
-}
-body.dark .stats {
-background: #2a2a3a;
-}
-.stat-value {
-font-size: 20px;
-font-weight: bold;
-color: #2c3e50;
-}
-body.dark .stat-value { color: #eee; }
-.green { color: #27ae60; }
-.gold { color: #f39c12; }
-.blue { color: #2980b9; }
-.purple { color: #8e44ad; }
-.red { color: #e74c3c; }
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
 
-.input-area {
-display: flex;
-gap: 10px;
-margin-bottom: 14px;
-}
-input {
-flex: 1;
-padding: 14px;
-font-size: 22px;
-text-align: center;
-border: 2px solid #ddd;
-border-radius: 14px;
-outline: none;
-background: #fafafa;
-}
-body.dark input {
-background: #2a2a3a;
-border-color: #444;
-color: #eee;
-}
-input:focus { border-color: #667eea; }
-input:disabled { opacity: 0.5; }
+        h1 { 
+            margin-top: 0; 
+            font-size: 24px; 
+            text-align: center;
+        }
 
-.btn {
-padding: 14px 18px;
-font-size: 18px;
-border: none;
-border-radius: 14px;
-font-weight: bold;
-cursor: pointer;
-transition: 0.15s;
-touch-action: manipulation;
-}
-.btn:active { transform: scale(0.94); }
-.btn-success { background: #27ae60; color: white; }
-.btn-danger { background: #e74c3c; color: white; }
-.btn-hint { background: #f39c12; color: white; }
-.btn-theme { background: #34495e; color: white; }
-.btn-difficulty { background: #8e44ad; color: white; flex: 1; font-size: 13px; padding: 10px; }
-.btn-difficulty.active { background: #6c3483; box-shadow: 0 0 8px #8e44ad88; }
-.btn-leaderboard { background: #e67e22; color: white; flex: 1; font-size: 13px; padding: 10px; }
+        .scoreboard {
+            margin: 20px 0;
+            padding: 16px;
+            background: var(--vkui--background_content, var(--bg-content));
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            border: 1px solid var(--vkui--border_base, var(--border));
+        }
 
-.result {
-background: #f2f2f2;
-padding: 14px;
-border-radius: 14px;
-margin-top: 14px;
-text-align: center;
-min-height: 56px;
-font-size: 17px;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-body.dark .result { background: #2a2a3a; }
-.result.orange { color: #e67e22; }
-.result.green { color: #27ae60; }
-.result.red { color: #e74c3c; }
-.result.blue { color: #2980b9; }
-.result.purple { color: #8e44ad; }
+        .score-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 8px; 
+            font-size: 14px; 
+            color: var(--vkui--text_secondary, var(--text-secondary));
+        }
 
-.hint-box {
-background: #f3e5f5;
-padding: 10px;
-border-radius: 12px;
-margin-top: 10px;
-text-align: center;
-color: #6c3483;
-}
-body.dark .hint-box {
-background: #2a1a3a;
-color: #bb86fc;
-}
+        .score-value { 
+            font-weight: 600; 
+            color: var(--vkui--accent_normal, var(--accent)); 
+        }
 
-.btn-row {
-display: flex;
-gap: 8px;
-margin-top: 10px;
-flex-wrap: wrap;
-}
-.btn-row .btn { flex: 1; font-size: 15px; padding: 12px; min-width: 52px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--vkui--border_base, var(--border));
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+        }
 
-.leaderboard {
-background: #f2f2f2;
-border-radius: 14px;
-padding: 14px;
-margin-top: 18px;
-display: none;
-}
-body.dark .leaderboard { background: #2a2a3a; }
-.leaderboard.show { display: block; }
-.leaderboard h3 { text-align: center; margin-bottom: 8px; }
-.leaderboard-item {
-display: flex;
-justify-content: space-between;
-padding: 6px 10px;
-border-bottom: 1px solid #ddd;
-font-size: 15px;
-}
-body.dark .leaderboard-item { border-bottom-color: #444; }
-.leaderboard-item:last-child { border-bottom: none; }
+        button {
+            padding: 12px 16px;
+            margin: 4px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--vkui--accent_normal, var(--accent));
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
 
-.name-input-overlay {
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-background: rgba(0,0,0,0.5);
-display: none;
-justify-content: center;
-align-items: center;
-z-index: 999;
-}
-.name-input-overlay.show { display: flex; }
-.name-input-box {
-background: white;
-padding: 28px 24px;
-border-radius: 20px;
-max-width: 300px;
-width: 90%;
-text-align: center;
-}
-body.dark .name-input-box {
-background: #2a2a3a;
-color: #eee;
-}
-.name-input-box input {
-width: 100%;
-padding: 12px;
-font-size: 18px;
-border-radius: 10px;
-border: 2px solid #ddd;
-margin-bottom: 12px;
-}
-body.dark .name-input-box input {
-background: #1a1a2a;
-border-color: #444;
-color: #eee;
-}
-.name-input-box .btn { width: 100%; }
+        button:active { opacity: 0.8; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; background-color: var(--border); }
 
-.achievement {
-position: fixed;
-top: 20px;
-left: 50%;
-transform: translateX(-50%);
-background: #27ae60;
-color: white;
-padding: 14px 28px;
-border-radius: 14px;
-font-weight: bold;
-box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-z-index: 1000;
-display: none;
-}
-.achievement.show { display: block; }
+        #message { 
+            margin-top: 16px; 
+            font-weight: 500; 
+            min-height: 20px; 
+            text-align: center;
+        }
 
-.time-warning {
-color: #e74c3c;
-animation: pulse 0.5s infinite alternate;
-}
-@keyframes pulse {
-from { opacity: 1; }
-to { opacity: 0.4; }
-}
+        .success { color: var(--vkui--text_status_positive, var(--status-positive)); }
+        .error { color: var(--vkui--text_status_negative, var(--status-negative)); }
 
-@media (max-width: 400px) {
-.container { padding: 16px 12px; }
-h1 { font-size: 22px; }
-input { font-size: 18px; padding: 10px; }
-.btn { font-size: 14px; padding: 10px; }
-}
-</style>
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 320px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Угадай число!</h1>
+        
+        <div class="scoreboard">
+            <div class="score-row"><span>🏆 Очки:</span> <span id="score" class="score-value">0</span></div>
+            <div class="score-row"><span>👑 Рекорд:</span> <span id="record" class="score-value">0</span></div>
+            <div class="score-row"><span>📊 Попытки:</span> <span id="attempts" class="score-value">0/10</span></div>
+            <div class="score-row"><span>⏱️ Время:</span> <span id="timer" class="score-value">0</span> сек</div>
+        </div>
 
-<div class="achievement" id="achievement">🏆 Достижение!</div>
+        <input type="number" id="guessInput" placeholder="Введите число" disabled autocomplete="off">
+        <button onclick="checkGuess()" disabled id="checkBtn">✅ Проверить</button>
 
-<div class="name-input-overlay" id="nameOverlay">
-<div class="name-input-box">
-<h3>🏆 Новый рекорд!</h3>
-<p style="font-size:14px; opacity:0.7; margin-bottom:12px;">Введи своё имя</p>
-<input type="text" id="nameInput" placeholder="Твоё имя" maxlength="15">
-<button class="btn btn-success" id="saveNameBtn">Сохранить</button>
-</div>
-</div>
+        <div id="message"></div>
 
-<div class="container">
-<h1>🎯 Угадай число</h1>
-<div class="subtitle" id="subtitle">От 1 до 100</div>
+        <div style="margin-top: 20px;">
+            <div class="controls-grid">
+                <button onclick="startGame(false)">♾ Без времени</button>
+                <button onclick="startGame(true)">⏱ На время (30с)</button>
+            </div>
+            
+            <div class="controls-grid">
+                <button onclick="setDifficulty('easy')">🟢 Лёгкий (1-50)</button>
+                <button onclick="setDifficulty('medium')">🟡 Средний (1-100)</button>
+                <button onclick="setDifficulty('hard')" style="grid-column: span 2;">🔴 Сложный (1-200)</button>
+            </div>
 
-<!-- Переключатель режимов -->
-<div class="mode-switch">
-<button class="mode-btn active" data-mode="classic" id="modeClassic">♾️ Без времени</button>
-<button class="mode-btn" data-mode="timed" id="modeTimed">⏱️ На время (30с)</button>
-</div>
+            <div style="margin-top: 10px; display: flex; justify-content: space-between;">
+                <button onclick="showHint()" disabled id="hintBtn">💡 Подсказка</button>
+                <button onclick="newGame()" style="background-color: transparent; border: 1px solid var(--border); color: var(--text-secondary);">🔄 Новая игра</button>
+            </div>
+        </div>
+    </div>
 
-<div class="stats">
-<div class="stat-item">🏆 Очки<br><span class="stat-value green" id="scoreDisplay">0</span></div>
-<div class="stat-item">👑 Рекорд<br><span class="stat-value gold" id="bestDisplay">0</span></div>
-<div class="stat-item">📊 Попытки<br><span class="stat-value blue" id="attemptsDisplay">0/10</span></div>
-<div class="stat-item" id="timerStat">⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span></div>
-</div>
+    <!-- 1. ПОДКЛЮЧЕНИЕ VK BRIDGE -->
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 
-<div class="input-area">
-<input type="number" id="guessInput" placeholder="Число" min="1" max="100">
-<button class="btn btn-success" id="checkBtn">✅</button>
-</div>
+    <script>
+        // 2. ОТПРАВКА СОБЫТИЯ ИНИЦИАЛИЗАЦИИ (КРИТИЧЕСКИ ВАЖНО)
+        // Это говорит ВКонтакте: "Приложение загрузилось".
+        vkBridge.send('VKWebAppInit');
 
-<div class="result blue" id="resultDisplay">Введи число и нажми ✅</div>
-<div class="hint-box" id="hintDisplay">💡 Нажми "Подсказка"</div>
+        let secretNumber;
+        let maxNumber = 100;
+        let attemptsLeft = 10;
+        let score = 0;
+        let record = 0;
+        let timerInterval;
+        let isTimed = false;
+        let timeLeft = 30;
+        let difficulty = 'medium';
 
-<div class="btn-row">
-<button class="btn btn-hint" id="hintBtn">💡</button>
-<button class="btn btn-theme" id="themeBtn">🌙</button>
-<button class="btn btn-danger" id="newBtn">🔄 Новая</button>
-</div>
+        // 3. ОБРАБОТКА ОТВЕТА ОТ VK BRIDGE
+        // Интерфейс разблокируется ТОЛЬКО после подтверждения от платформы.
+        vkBridge.on('VKWebAppInit', () => {
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('checkBtn').disabled = false;
+            document.getElementById('hintBtn').disabled = false;
+            showMessage('Приложение готово! Выберите режим и начните игру.', 'success');
+        });
 
-<div class="btn-row" style="margin-top:8px;">
-<button class="btn btn-difficulty active" data-level="easy">🟢 Лёгкий</button>
-<button class="btn btn-difficulty" data-level="medium">🟡 Средний</button>
-<button class="btn btn-difficulty" data-level="hard">🔴 Сложный</button>
-</div>
+        function setDifficulty(level) {
+            difficulty = level;
+            if (level === 'easy') maxNumber = 50;
+            else if (level === 'hard') maxNumber = 200;
+            else maxNumber = 100;
+            
+            showMessage(`Сложность: ${level}. Диапазон: 1-${maxNumber}`);
+        }
 
-<div class="btn-row" style="margin-top:4px;">
-<button class="btn btn-leaderboard" id="leaderboardBtn">🏆 Таблица лидеров</button>
-</div>
+        function startGame(timed) {
+            isTimed = timed;
+            resetGame();
+            generateNumber();
+            
+            const modeText = timed ? 'Режим на время (30 сек)' : 'Режим без времени';
+            showMessage(`Игра началась! ${modeText}. Угадай число от 1 до ${maxNumber}`);
+        }
 
-<div class="leaderboard" id="leaderboard">
-<h3>🏆 Топ-10</h3>
-<div id="leaderboardList"></div>
-</div>
-</div>
+        function resetGame() {
+            attemptsLeft = 10;
+            timeLeft = 30;
+            clearInterval(timerInterval);
+            document.getElementById('attempts').innerText = attemptsLeft + '/10';
+            document.getElementById('score').innerText = score;
+            document.getElementById('guessInput').value = '';
+            document.getElementById('message').className = '';
+            document.getElementById('message').innerText = '';
+            
+            if (isTimed) {
+                timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+        }
 
-<!-- VK BRIDGE -->
-<script src="https://vk.com/js/api/xd_connection.js?2"></script>
-<script>
-function initVK() {
-try {
-if (typeof VK !== 'undefined' && VK.init) {
-VK.init(function() {
-if (typeof VKWebAppInit !== 'undefined') VKWebAppInit();
-if (VK.callMethod) VK.callMethod("resizeWindow", window.innerWidth, window.innerHeight);
-console.log('✅ VK Mini App инициализирован');
-}, function(error) {
-console.warn('⚠️ VK инициализация с ошибкой:', error);
-if (typeof VKWebAppInit !== 'undefined') VKWebAppInit();
-});
-} else {
-if (typeof window.VKWebAppInit === 'function') window.VKWebAppInit();
-}
-} catch (e) {
-console.warn('⚠️ Ошибка VK:', e);
-}
-}
-if (document.readyState === 'complete') initVK();
-else window.addEventListener('load', initVK);
-setTimeout(initVK, 1000);
-</script>
+        function generateNumber() {
+            secretNumber = Math.floor(Math.random() * maxNumber) + 1;
+            // Для отладки в консоли можно раскомментировать, но в продакшене лучше скрыть
+            // console.log('Secret number:', secretNumber); 
+        }
 
-<script>
-// ============================================================
-// ИГРА
-// ============================================================
-let secret = Math.floor(Math.random() * 100) + 1;
-let attempts = 0;
-let score = 0;
-let totalScore = parseInt(localStorage.getItem('totalScore')) || 0;
-let bestScore = parseInt(localStorage.getItem('bestScore')) || 0;
-let timer = 0;
-let maxTime = 30;
-let timerInterval = null;
-let isGameActive = false;
-let isTimedMode = false;
-let level = 'easy';
-let currentPoints = 0;
-let guessedCount = 0;
-let achievements = { firstTry: false, master: false, pro: false };
+        function checkGuess() {
+            const input = document.getElementById('guessInput');
+            const guess = parseInt(input.value);
 
-const levels = {
-easy: { max: 50, attempts: 10, label: 'От 1 до 50', bonus: 1 },
-medium: { max: 100, attempts: 10, label: 'От 1 до 100', bonus: 2 },
-hard: { max: 200, attempts: 8, label: 'От 1 до 200', bonus: 3 }
-};
+            if (isNaN(guess) || guess < 1 || guess > maxNumber) {
+                showMessage(`Пожалуйста, введите число от 1 до \${maxNumber}`, 'error');
+                return;
+            }
 
-const $ = id => document.getElementById(id);
-const input = $('guessInput');
-const checkBtn = $('checkBtn');
-const newBtn = $('newBtn');
-const hintBtn = $('hintBtn');
-const themeBtn = $('themeBtn');
-const leaderboardBtn = $('leaderboardBtn');
-const modeClassic = $('modeClassic');
-const modeTimed = $('modeTimed');
-const resultDisplay = $('resultDisplay');
-const hintDisplay = $('hintDisplay');
-const scoreDisplay = $('scoreDisplay');
-const bestDisplay = $('bestDisplay');
-const attemptsDisplay = $('attemptsDisplay');
-const timerDisplay = $('timerDisplay');
-const timerStat = $('timerStat');
-const achievementDiv = $('achievement');
-const diffBtns = document.querySelectorAll('.btn-difficulty');
-const nameOverlay = $('nameOverlay');
-const nameInput = $('nameInput');
-const saveNameBtn = $('saveNameBtn');
+            attemptsLeft--;
+            document.getElementById('attempts').innerText = attemptsLeft + '/10';
 
-function updateUI() {
-scoreDisplay.textContent = totalScore;
-bestDisplay.textContent = bestScore;
-attemptsDisplay.textContent = isTimedMode ? guessedCount : `${attempts}/${levels[level].attempts}`;
-if (isTimedMode) {
-timerDisplay.textContent = Math.max(0, maxTime - timer);
-timerDisplay.className = 'stat-value ' + (maxTime - timer <= 5 ? 'red' : 'purple');
-} else {
-timerDisplay.textContent = timer;
-timerDisplay.className = 'stat-value purple';
-}
-}
+            if (guess === secretNumber) {
+                score += calculateScore();
+                updateRecord();
+                showMessage('🎉 Победа! Ты угадал число!', 'success');
+                endGame();
+            } else if (attemptsLeft === 0) {
+                showMessage(`🚫 Проиграно. Число было \${secretNumber}`, 'error');
+                endGame();
+            } else {
+                showMessage(guess < secretNumber ? '👉 Число больше' : '👈 Число меньше');
+                input.select();
+            }
+        }
 
-function showAchievement(text) {
-achievementDiv.textContent = text;
-achievementDiv.classList.add('show');
-setTimeout(() => achievementDiv.classList.remove('show'), 2500);
-}
+        function calculateScore() {
+            let baseScore = 100;
+            let penalty = (10 - attemptsLeft) * 10; 
+            let timeBonus = isTimed ? timeLeft : 0;
+            
+            return Math.max(0, baseScore - penalty + timeBonus);
+        }
 
-function startTimer() {
-if (timerInterval) return;
-timer = 0;
-isGameActive = true;
-timerInterval = setInterval(() => {
-timer++;
-updateUI();
-if (isTimedMode && timer >= maxTime) {
-endTimedGame();
-}
-}, 1000);
-}
+        function updateRecord() {
+            if (score > record) {
+                record = score;
+                document.getElementById('record').innerText = record;
+            }
+        }
 
-function stopTimer() {
-clearInterval(timerInterval);
-timerInterval = null;
-isGameActive = false;
-}
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                showMessage('⏱ Время вышло!', 'error');
+                endGame();
+                return;
+            }
+            document.getElementById('timer').innerText = timeLeft;
+            timeLeft--;
+        }
 
-function endTimedGame() {
-stopTimer();
-input.disabled = true;
-checkBtn.disabled = true;
-const points = guessedCount * 10;
-totalScore += points;
-localStorage.setItem('totalScore', totalScore);
-if (points > bestScore) {
-bestScore = points;
-localStorage.setItem('bestScore', bestScore);
-}
-resultDisplay.textContent = `⏱️ Время вышло! Угадано: ${guessedCount} чисел (+${points} очков)`;
-resultDisplay.className = 'result orange';
-updateUI();
-if (isTopScore(totalScore)) {
-const playerName = localStorage.getItem('playerName');
-if (playerName) addScore(playerName, totalScore, guessedCount, maxTime);
-else { nameOverlay.classList.add('show'); nameInput.focus(); }
-}
-}
+        function showHint() {
+            if (secretNumber % 2 === 0) {
+                showMessage('💡 Подсказка: число чётное.');
+            } else {
+                showMessage('💡 Подсказка: число нечётное.');
+            }
+        }
 
-function checkGuess() {
-const raw = input.value.trim();
-if (raw === '') {
-resultDisplay.textContent = '⚠️ Введи число!';
-resultDisplay.className = 'result red';
-return;
-}
-const guess = parseInt(raw);
-const maxNum = levels[level].max;
-if (isNaN(guess) || guess < 1 || guess > maxNum) {
-resultDisplay.textContent = `⚠️ Число от 1 до ${maxNum}!`;
-resultDisplay.className = 'result red';
-return;
-}
+        function endGame() {
+            clearInterval(timerInterval);
+            document.getElementById('guessInput').disabled = true;
+            document.getElementById('checkBtn').disabled = true;
+            document.getElementById('hintBtn').disabled = true;
+        }
 
-if (!isGameActive) startTimer();
+        function showMessage(text, type = '') {
+            const el = document.getElementById('message');
+            el.innerText = text;
+            el.className = type;
+        }
 
-if (isTimedMode) {
-// Режим на время — после каждого угаданного числа генерируем новое
-if (guess === secret) {
-guessedCount++;
-secret = Math.floor(Math.random() * maxNum) + 1;
-resultDisplay.textContent = `✅ +1! Угадано: ${guessedCount}`;
-resultDisplay.className = 'result green';
-input.value = '';
-input.focus();
-updateUI();
-return;
-} else {
-resultDisplay.textContent = guess < secret ? '❌ Мало! Попробуй ещё' : '❌ Много! Попробуй ещё';
-resultDisplay.className = 'result orange';
-input.value = '';
-input.focus();
-return;
-}
-}
-
-// Классический режим
-attempts++;
-const remaining = levels[level].attempts - attempts;
-
-if (guess < secret) {
-resultDisplay.textContent = `❌ Мало! Осталось ${remaining} попыток`;
-resultDisplay.className = 'result orange';
-} else if (guess > secret) {
-resultDisplay.textContent = `❌ Много! Осталось ${remaining} попыток`;
-resultDisplay.className = 'result orange';
-} else {
-stopTimer();
-const bonus = levels[level].bonus;
-currentPoints = (levels[level].attempts - attempts + 1) * bonus + Math.max(0, 10 - timer);
-currentPoints = Math.max(currentPoints, 1);
-totalScore += currentPoints;
-localStorage.setItem('totalScore', totalScore);
-if (currentPoints > bestScore) {
-bestScore = currentPoints;
-localStorage.setItem('bestScore', bestScore);
-}
-resultDisplay.textContent = `🎉 Угадал за ${attempts} попыток! +${currentPoints} очков 🕐${timer}с`;
-resultDisplay.className = 'result green';
-input.disabled = true;
-checkBtn.disabled = true;
-
-if (attempts === 1 && !achievements.firstTry) {
-achievements.firstTry = true;
-showAchievement('🎯 С первого раза! Ты гений!');
-}
-if (attempts <= 3 && !achievements.master) {
-achievements.master = true;
-showAchievement('🏆 Мастер! Отличная интуиция!');
-}
-if (attempts <= 5 && !achievements.pro) {
-achievements.pro = true;
-showAchievement('🌟 Профи! Ты на высоте!');
-}
-
-updateUI();
-if (isTopScore(totalScore)) {
-const playerName = localStorage.getItem('playerName');
-if (playerName) addScore(playerName, totalScore, attempts, timer);
-else { nameOverlay.classList.add('show'); nameInput.focus(); }
-}
-return;
-}
-
-if (attempts >= levels[level].attempts) {
-stopTimer();
-resultDisplay.textContent = `💔 Проиграл! Было ${secret}`;
-resultDisplay.className = 'result red';
-input.disabled = true;
-checkBtn.disabled = true;
-}
-updateUI();
-input.value = '';
-input.focus();
-}
-
-function newGame() {
-stopTimer();
-const maxNum = levels[level].max;
-secret = Math.floor(Math.random() * maxNum) + 1;
-attempts = 0;
-guessedCount = 0;
-timer = 0;
-timerDisplay.textContent = isTimedMode ? maxTime : '0';
-isGameActive = false;
-input.disabled = false;
-checkBtn.disabled = false;
-input.value = '';
-if (isTimedMode) {
-resultDisplay.textContent = `⏱️ Угадай как можно больше чисел за ${maxTime}с!`;
-resultDisplay.className = 'result purple';
-attemptsDisplay.textContent = '0';
-timerDisplay.textContent = maxTime;
-} else {
-resultDisplay.textContent = `🔄 Новая игра! (1-${maxNum})`;
-resultDisplay.className = 'result blue';
-attemptsDisplay.textContent = `0/${levels[level].attempts}`;
-timerDisplay.textContent = '0';
-}
-hintDisplay.textContent = '💡 Нажми "Подсказка"';
-achievements = { firstTry: false, master: false, pro: false };
-updateUI();
-input.focus();
-}
-
-function showHint() {
-const maxNum = levels[level].max;
-const mid = Math.floor(maxNum / 2);
-hintDisplay.textContent = secret < mid ? `💡 Число МЕНЬШЕ ${mid}` : `💡 Число БОЛЬШЕ ${mid}`;
-}
-
-function toggleTheme() {
-document.body.classList.toggle('dark');
-themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-}
-
-function setLevel(lvl) {
-level = lvl;
-diffBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.level === lvl));
-document.getElementById('subtitle').textContent = levels[lvl].label;
-newGame();
-}
-
-function setMode(mode) {
-isTimedMode = (mode === 'timed');
-modeClassic.classList.toggle('active', !isTimedMode);
-modeTimed.classList.toggle('active', isTimedMode);
-timerStat.innerHTML = isTimedMode ? '⏱️ Осталось<br><span class="stat-value purple" id="timerDisplay">30</span>' :
-'⏱️ Сек<br><span class="stat-value purple" id="timerDisplay">0</span>';
-document.getElementById('timerDisplay').textContent = isTimedMode ? maxTime : '0';
-newGame();
-}
-
-// Таблица лидеров
-function getLeaderboard() {
-const data = localStorage.getItem('leaderboard');
-return data ? JSON.parse(data) : [];
-}
-
-function saveLeaderboard(data) {
-localStorage.setItem('leaderboard', JSON.stringify(data));
-}
-
-function addScore(name, points, attempts, time) {
-const board = getLeaderboard();
-board.push({ name, points, attempts, time, date: new Date().toLocaleDateString() });
-board.sort((a, b) => b.points - a.points);
-if (board.length > 10) board.length = 10;
-saveLeaderboard(board);
-}
-
-function isTopScore(points) {
-const board = getLeaderboard();
-if (board.length < 10) return true;
-return points > board[board.length - 1].points;
-}
-
-function renderLeaderboard() {
-const board = getLeaderboard();
-const list = document.getElementById('leaderboardList');
-if (board.length === 0) {
-list.innerHTML = '<p style="text-align:center; opacity:0.6;">Пока нет рекордов. Стань первым! 🏆</p>';
-return;
-}
-list.innerHTML = board.map((item, index) => `
-<div class="leaderboard-item">
-<span>#${index + 1}</span>
-<span>${item.name}</span>
-<span>${item.points} 🏆</span>
-</div>
-`).join('');
-}
-
-function toggleLeaderboard() {
-const board = document.getElementById('leaderboard');
-board.classList.toggle('show');
-document.getElementById('leaderboardBtn').textContent = board.classList.contains('show') ? '❌ Скрыть' : '🏆 Таблица лидеров';
-if (board.classList.contains('show')) renderLeaderboard();
-}
-
-// События
-checkBtn.addEventListener('click', checkGuess);
-newBtn.addEventListener('click', newGame);
-hintBtn.addEventListener('click', showHint);
-themeBtn.addEventListener('click', toggleTheme);
-leaderboardBtn.addEventListener('click', toggleLeaderboard);
-modeClassic.addEventListener('click', () => setMode('classic'));
-modeTimed.addEventListener('click', () => setMode('timed'));
-
-input.addEventListener('keydown', e => { if (e.key === 'Enter') checkGuess(); });
-
-diffBtns.forEach(btn => btn.addEventListener('click', () => setLevel(btn.dataset.level)));
-
-saveNameBtn.addEventListener('click', function() {
-const name = nameInput.value.trim() || 'Игрок';
-localStorage.setItem('playerName', name);
-addScore(name, totalScore, isTimedMode ? guessedCount : attempts, isTimedMode ? maxTime : timer);
-nameOverlay.classList.remove('show');
-renderLeaderboard();
-if (document.getElementById('leaderboard').classList.contains('show')) renderLeaderboard();
-});
-
-nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveNameBtn.click(); });
-
-// Старт
-const savedName = localStorage.getItem('playerName');
-if (savedName) nameInput.value = savedName;
-updateUI();
-newGame();
-input.focus();
-</script>
+        function newGame() {
+            location.reload();
+        }
+    </script>
 </body>
 </html>
 
