@@ -2,172 +2,124 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Угадай число</title>
+    <!-- Подключаем VKUI (стили и компоненты) -->
+    <link rel="stylesheet" href="https://unpkg.com/@vkontakte/vkui@4.18.0/dist/vkui.min.css">
+    <!-- Подключаем VK Bridge -->
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     <style>
-        :root {
-            --primary: #007bff;
-            --success: #28a745;
-            --danger: #dc3545;
-            --bg: #f4f6f8;
-            --card: #ffffff;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: #333;
+            background-color: var(--vkui--color_background);
+            color: var(--vkui--color_text_primary);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 16px;
         }
-
-        .container {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        .game-container {
             width: 100%;
             max-width: 400px;
         }
-
-        h2 {
-            text-align: center;
-            margin-top: 0;
-            color: #2c3e50;
-        }
-
-        .stats {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+        .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            font-size: 14px;
-            color: #666;
+            margin-bottom: 16px;
+            background: var(--vkui--color_background_secondary);
+            padding: 12px;
+            border-radius: 12px;
         }
-
-        .stat-label { font-weight: 600; color: #333; }
-        .stat-value { text-align: right; }
-
+        .stat-label {
+            font-size: 12px;
+            color: var(--vkui--color_text_secondary);
+        }
+        .stat-value {
+            font-weight: 600;
+            text-align: right;
+        }
         .input-group {
             margin-bottom: 16px;
-            position: relative;
         }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box; /* Важно для отступов */
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        .controls {
+        .level-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 16px;
             justify-content: center;
         }
-
-        button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: background 0.2s;
-            flex: 1 1 120px;
+        .vkui-Button {
+            min-width: 120px;
         }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        .btn-primary:hover { background-color: #0056b3; }
-
-        .btn-level {
-            background-color: #e9ecef;
-            color: #495057;
-        }
-        .btn-level:hover { background-color: #dee2e6; }
-
-        .btn-disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
         .message {
             min-height: 24px;
             text-align: center;
-            font-weight: 500;
             margin-bottom: 16px;
+            font-weight: 500;
         }
-        .msg-success { color: var(--success); }
-        .msg-error { color: var(--danger); }
-
-        .bottom-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 16px;
-        }
-        
-        .btn-small {
-            padding: 6px 10px;
-            font-size: 12px;
-        }
+        .msg-success { color: var(--vkui--color_green); }
+        .msg-error { color: var(--vkui--color_red); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Угадай число!</h2>
+<div class="game-container">
+    <h2 style="margin-top: 0; margin-bottom: 16px; text-align: center;">Угадай число!</h2>
 
-    <div class="stats">
-        <div><span class="stat-label">Очки:</span> <span id="score">0</span></div>
-        <div><span class="stat-label">Рекорд:</span> <span id="record">0</span></div>
-        <div><span class="stat-label">Попытки:</span> <span id="attempts">0/10</span></div>
-        <div><span class="stat-label">Время:</span> <span id="timer">0</span> сек</div>
+    <div class="stats-grid">
+        <div><span class="stat-label">Очки:</span> <span class="stat-value" id="score">0</span></div>
+        <div><span class="stat-label">Рекорд:</span> <span class="stat-value" id="record">0</span></div>
+        <div><span class="stat-label">Попытки:</span> <span class="stat-value" id="attempts">0/10</span></div>
+        <div><span class="stat-label">Время:</span> <span class="stat-value" id="timer">0</span> сек</div>
     </div>
 
     <div class="input-group">
-        <input type="number" id="guessInput" placeholder="Введите число" disabled>
+        <div id="input-wrapper" style="display: none;">
+            <div id="input-label" class="vkuiFormItem__before">Введите число</div>
+            <input type="number" id="guessInput" class="vkuiFormItem__input" inputmode="numeric" pattern="[0-9]*" disabled>
+        </div>
     </div>
 
-    <button id="checkBtn" class="btn-primary btn-disabled" onclick="checkGuess()">Проверить</button>
+    <button id="checkBtn" class="vkuiButton vkuiButton--size_l vkuiButton--mode_primary vkuiButton--disabled" onclick="checkGuess()">Проверить</button>
 
     <div id="message" class="message"></div>
 
-    <div class="controls">
-        <button class="btn-primary" onclick="startGame(false)">Без времени</button>
-        <button class="btn-primary" onclick="startGame(true)">На время (30с)</button>
+    <div style="margin-bottom: 16px; text-align: center; color: var(--vkui--color_text_secondary); font-size: 13px;">Режим:</div>
+    <div class="level-buttons">
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary" onclick="startGame(false)">Без времени</button>
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary" onclick="startGame(true)">На время (30с)</button>
     </div>
 
-    <div class="controls">
-        <button class="btn-level" onclick="setLevel('easy')">Лёгкий (1-50)</button>
-        <button class="btn-level" onclick="setLevel('medium')">Средний (1-100)</button>
-        <button class="btn-level" onclick="setLevel('hard')">Сложный (1-200)</button>
+    <div style="margin-bottom: 16px; text-align: center; color: var(--vkui--color_text_secondary); font-size: 13px;">Сложность:</div>
+    <div class="level-buttons">
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary" onclick="setLevel('easy')">Лёгкий (1-50)</button>
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary" onclick="setLevel('medium')">Средний (1-100)</button>
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary" onclick="setLevel('hard')">Сложный (1-200)</button>
     </div>
 
-    <div class="bottom-actions">
-        <button id="hintBtn" class="btn-level btn-disabled" onclick="showHint()">💡 Подсказка</button>
-        <button class="btn-level btn-small" onclick="newGame()">🔄 Новая игра</button>
+    <div style="display: flex; justify-content: space-between; margin-top: 16px;">
+        <button id="hintBtn" class="vkuiButton vkuiButton--size_m vkuiButton--mode_secondary vkuiButton--disabled" onclick="showHint()">💡 Подсказка</button>
+        <button class="vkuiButton vkuiButton--size_m vkuiButton--mode_outline" onclick="newGame()">🔄 Новая игра</button>
     </div>
 </div>
 
+<script src="https://unpkg.com/@vkontakte/vkui@4.18.0/dist/vkui.js"></script>
 <script>
+    // --- Инициализация VK Bridge ---
+    const bridge = window.VKBridge;
+
+    bridge.send('VKWebAppInit').then(data => {
+        console.log('VK Bridge initialized:', data);
+        // Здесь можно получить данные пользователя, если нужно
+        // bridge.send('VKWebAppGetUserInfo').then(userInfo => { ... });
+    }).catch(error => {
+        console.error('VK Bridge init error:', error);
+        // Если не в VK — работаем как обычный сайт
+    });
+
     // --- Переменные состояния ---
     let secretNumber;
     let maxNumber = 100;
@@ -186,6 +138,7 @@
         attempts: document.getElementById('attempts'),
         timer: document.getElementById('timer'),
         input: document.getElementById('guessInput'),
+        inputWrapper: document.getElementById('input-wrapper'),
         checkBtn: document.getElementById('checkBtn'),
         message: document.getElementById('message'),
         hintBtn: document.getElementById('hintBtn')
@@ -209,8 +162,9 @@
         updateUI();
         els.input.disabled = false;
         els.input.focus();
-        els.checkBtn.classList.remove('btn-disabled');
-        els.hintBtn.classList.remove('btn-disabled');
+        els.inputWrapper.style.display = 'block';
+        els.checkBtn.classList.remove('vkuiButton--disabled');
+        els.hintBtn.classList.remove('vkuiButton--disabled');
     }
 
     function setLevel(lvl) {
@@ -220,7 +174,6 @@
             case 'medium': maxNumber = 100; break;
             case 'hard': maxNumber = 200; break;
         }
-        // Если игра уже идет, меняем диапазон, но не сбрасываем прогресс
         if (!els.input.disabled) {
             generateNumber();
         }
@@ -229,7 +182,7 @@
 
     function generateNumber() {
         secretNumber = Math.floor(Math.random() * maxNumber) + 1;
-        console.log("Secret:", secretNumber); // Для отладки
+        console.log("Secret:", secretNumber);
     }
 
     function checkGuess() {
@@ -243,12 +196,10 @@
         attemptsLeft--;
         
         if (guess === secretNumber) {
-            // Победа
             score = calculateScore();
             saveRecord();
             endGame(true);
         } else {
-            // Промах
             let hintText = guess < secretNumber ? "Больше!" : "Меньше!";
             showMessage(hintText, 'error');
             
@@ -262,7 +213,7 @@
     function showHint() {
         if (attemptsLeft <= 0) return;
         
-        attemptsLeft--; // Тратим попытку на подсказку
+        attemptsLeft--;
         
         let hint = "";
         if (secretNumber % 2 === 0) hint += "Чётное. ";
@@ -277,10 +228,9 @@
 
     function calculateScore() {
         let base = 100;
-        let penalty = (10 - attemptsLeft) * 10; // Штраф за потраченные попытки
-        let timeBonus = isTimed ? timeLeft : 0; // Бонус за оставшееся время
+        let penalty = (10 - attemptsLeft) * 10;
+        let timeBonus = isTimed ? timeLeft : 0;
         
-        // Бонус за сложность
         let diffBonus = 0;
         if (level === 'easy') diffBonus = 20;
         if (level === 'medium') diffBonus = 50;
@@ -291,8 +241,8 @@
 
     function endGame(win) {
         els.input.disabled = true;
-        els.checkBtn.classList.add('btn-disabled');
-        els.hintBtn.classList.add('btn-disabled');
+        els.checkBtn.classList.add('vkuiButton--disabled');
+        els.hintBtn.classList.add('vkuiButton--disabled');
         
         if (win) {
             showMessage("🎉 Победа! Ты угадал число!", 'success');
@@ -322,11 +272,11 @@
     function newGame() {
         clearInterval(timerInterval);
         init();
-        // Сброс кнопок и инпута происходит внутри startGame или init
         els.input.value = "";
         els.input.disabled = true;
-        els.checkBtn.classList.add('btn-disabled');
-        els.hintBtn.classList.add('btn-disabled');
+        els.inputWrapper.style.display = 'none';
+        els.checkBtn.classList.add('vkuiButton--disabled');
+        els.hintBtn.classList.add('vkuiButton--disabled');
         showMessage("", "");
     }
 
@@ -335,18 +285,16 @@
         els.record.innerText = record;
         els.attempts.innerText = (10 - attemptsLeft) + "/10";
         
-        // Блокировка кнопки проверки, если попытки кончились или время вышло
         if (attemptsLeft <= 0 || (isTimed && timeLeft <= 0)) {
-            els.checkBtn.classList.add('btn-disabled');
+            els.checkBtn.classList.add('vkuiButton--disabled');
         } else {
-            els.checkBtn.classList.remove('btn-disabled');
+            els.checkBtn.classList.remove('vkuiButton--disabled');
         }
 
-        // Блокировка подсказки
         if (attemptsLeft <= 0) {
-            els.hintBtn.classList.add('btn-disabled');
+            els.hintBtn.classList.add('vkuiButton--disabled');
         } else {
-            els.hintBtn.classList.remove('btn-disabled');
+            els.hintBtn.classList.remove('vkuiButton--disabled');
         }
     }
 
@@ -359,24 +307,43 @@
     function saveRecord() {
         if (score > record) {
             record = score;
-            localStorage.setItem('guessNumberRecord', record);
+            // Пробуем сохранить в VK Storage (если в VK)
+            if (typeof bridge !== 'undefined') {
+                bridge.send('VKWebAppStorageSet', { key: 'guessNumberRecord', value: record.toString() })
+                    .catch(() => localStorage.setItem('guessNumberRecord', record));
+            } else {
+                localStorage.setItem('guessNumberRecord', record);
+            }
             els.record.innerText = record;
         }
     }
 
     function loadRecord() {
-        const saved = localStorage.getItem('guessNumberRecord');
-        if (saved) {
-            record = parseInt(saved);
+        // Пробуем загрузить из VK Storage
+        if (typeof bridge !== 'undefined') {
+            bridge.send('VKWebAppStorageGet', { key: 'guessNumberRecord' })
+                .then(data => {
+                    if (data && data.value) {
+                        record = parseInt(data.value);
+                        els.record.innerText = record;
+                    }
+                })
+                .catch(() => {
+                    const saved = localStorage.getItem('guessNumberRecord');
+                    if (saved) record = parseInt(saved);
+                });
+        } else {
+            const saved = localStorage.getItem('guessNumberRecord');
+            if (saved) record = parseInt(saved);
         }
     }
 
     // Запуск при загрузке
     init();
-
 </script>
 
 </body>
 </html>
+
 
 
